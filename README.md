@@ -24,6 +24,15 @@ npm run coverage   # couverture (objectif moteur ≥ 90 %)
 npm run lint
 ```
 
+## Moteur de calcul
+
+`src/engine/` : TypeScript pur (aucun import React), testé.
+
+```bash
+npm run demo                 # rapport complet du profil « Marc et Sophie » en console
+npm run fetch:cantons 2026   # régénère la grille fiscale des 26 chefs-lieux (calculateur officiel AFC)
+```
+
 ## Identité visuelle
 
 - `brand/logo.png` : logo fourni. `brand/*.svg` : vectorisation (texte converti en tracés, police Literata).
@@ -32,13 +41,15 @@ npm run lint
 
 ## Mettre à jour les paramètres annuels
 
-Les paramètres légaux vivent dans `src/engine/params/ch-AAAA.ts` (Phase 2), chacun avec
+Les paramètres légaux vivent dans `src/engine/params/ch-AAAA.ts`, chacun avec
 `meta { year, verifiedOn, sources[] }`. Chaque année :
 
 1. Copier le fichier de l'année précédente en `ch-AAAA.ts` et reporter les valeurs publiées par l'OFAS
    (rentes AVS, seuils LPP, plafonds 3a) et l'AFC (barème IFD).
 2. Mettre à jour `verifiedOn` et `sources`. Toute valeur non confirmée garde `// TODO: VERIFY`.
-3. `npm test` : les tests de recette doivent rester verts.
+3. Régénérer les données cantonales : `npm run fetch:cantons AAAA` (puis pointer `params/cantons.ts` sur le nouveau JSON).
+4. Ajouter l'année dans `params/index.ts` et des tests de lignes officielles dans `__tests__/tax.test.ts`.
+5. `npm test` : les tests de recette doivent rester verts.
 
 ## Déploiement
 

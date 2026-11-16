@@ -1,7 +1,7 @@
 # CLAUDE.md — Ma Retraite Franco-Suisse
 
 > Mémoire du projet. À relire au début de chaque session, à mettre à jour à chaque phase.
-> Phase en cours : **1 · Fondations et design system**.
+> Phase en cours : **2 · Moteur de calcul** (livré, en attente de validation).
 
 ## 1. Vision
 
@@ -88,7 +88,7 @@ e2e/          # Playwright : onboarding, ajustement critère (<100 ms), carte
 
 ## 5. Paramètres légaux (source de vérité = `src/engine/params/`)
 
-### 5.1 Valeurs (fournies par le cahier des charges ; décision CF du 02.10.2026 pour 2027)
+### 5.1 Valeurs (2027 confirmées : fiche OFAS du 02.10.2026 ; LPP 2 % : CF 04.11.2026)
 
 | Paramètre | 2026 | 2027 |
 |---|---|---|
@@ -103,7 +103,7 @@ e2e/          # Playwright : onboarding, ajustement critère (<100 ms), carte
 | 3a avec LPP | 7'258 | 7'373 |
 | 3a sans LPP (20 %, max) | 36'288 | 36'864 |
 | Taux de conversion LPP min (oblig.) | 6,8 % | 6,8 % |
-| Taux d'intérêt min LPP | 1,25 % | `TODO: VERIFY` |
+| Taux d'intérêt min LPP | 1,25 % | **2,00 %** |
 
 ### 5.2 AVS 21
 - Âge de référence 65. Femmes transitoires : 1961 → 64a3m ; 1962 → 64a6m ; 1963 → 64a9m ; ≥ 1964 → 65.
@@ -113,6 +113,8 @@ e2e/          # Playwright : onboarding, ajustement critère (<100 ms), carte
 - Pas de 13e rente si rente entièrement ajournée. Supplément transitoire femmes hors 13e (simplifiable v1).
 - Formule art. 34 LAVS : `RAM ≤ 36·min → 0.74·min + 13/600·RAM`, sinon `1.04·min + 8/600·RAM`, bornée [min, max]. Rente partielle × années/44 (dès l'année suivant les 20 ans). Couple ≤ 150 % du max.
 - Contrôles : 2026 RAM 15'120 → 1'260 ; RAM 90'720 → 2'520 (vérifiés à la main : continuité au point 45'360 = 1'915.20).
+- Tables officielles mois par mois (mémento 3.04, état 1.1.2026) : anticipation 0,6 %…13,6 % ; ajournement par trimestre 5,2 %…31,5 %.
+- Cotisations AVS des non-actifs (mémento 2.03) : 530 fr. < 350'000, +106 fr. par 50'000 jusqu'à 1,75 mio, puis +159 fr., max 26'500 (2027 : min 541, paliers 2026).
 
 ### 5.3 Fiscalité (état 16.11.2026)
 - Capital 2e/3e piliers : imposé séparément ; IFD = 1/5 du barème ordinaire (art. 38 LIFD). Hausse du programme d'allègement 2027 rejetée (mars 2026).
@@ -120,10 +122,15 @@ e2e/          # Playwright : onboarding, ajustement critère (<100 ms), carte
 - Rachat LPP déductible ; blocage 3 ans avant tout capital (art. 79b al. 3 LPP) → alerte moteur.
 - 3a : retrait 60 → 70 (si activité). Rachats 3a rétroactifs dès 2026 pour lacunes nées dès 2025.
 - Valeur locative supprimée au 01.01.2029 (logement occupé : fin de la déduction des intérêts ; locatif : intérêts toujours déductibles). Moteur : avant 2029 / dès 2029.
-- IFD : barème officiel LIFD art. 36 (AFC), **pas de mémoire**. ICC : interpolation log-linéaire sur « Charge fiscale en Suisse » (AFC), chef-lieu, mention « estimation ±10 % ».
+- IFD : barème officiel (2026 : Form. 58c AFC ; 2027 : OPFr du 22.09.2026, art. 2), impôt = min(barème, 11,5 % du revenu), revenu arrondi à 100 fr., impôt arrondi à 5 ct. inférieurs, réduction par enfant 263/264 fr.
+- ICC : grille générée depuis le **calculateur officiel AFC** (année fiscale 2026, commune chef-lieu, sans impôt ecclésiastique) par `scripts/fetch-cantonal-tax.mjs` → `src/engine/params/cantonal-tax-2026.json` (revenu 10k→1M, fortune 50k→5M, capital 25k→3M ; seul/marié). Interpolation log-linéaire, « estimation ±10 % ». L'app n'appelle jamais ce service.
+- Années futures : barèmes supposés indexés à l'inflation (compensation de la progression à froid) → montants déflatés vers l'année du barème, taxés, ré-inflatés.
 
 ### 5.4 Hypothèses par défaut (panneau « Hypothèses »)
 Inflation 1,0 % (0–3) · rendements prudent 1,5 / équilibré 3,0 / dynamique 4,5 % nets · liquidités 0,5 % · progression salariale réelle 0,5 % · AVS indexée = inflation (simplification de l'indice mixte) · LPP non indexée · espérance de vie à 65 : ≈ 20 H / ≈ 23 F (`TODO: VERIFY` OFS) · horizon par défaut 95 ans · baisse dépenses retraite −10 %, −15 % après 80 (option) · tenue des charges : 5 % théorique + 1 % entretien + amortissement ≤ 33 % · réduction taux de conversion anticipé −0,2 pt/an · survivant LPP 60 %.
+
+### 5.4 bis Hypothèses de modélisation (moteur, modifiables)
+Revenu imposable ≈ salaire × (1 − 20 %) − 3a − rachats ; rentes × (1 − 8 %) ; rendement imposable = 40 % du rendement des placements + intérêts ; valeur fiscale de l'immobilier 70 % ; valeur locative 2,5 % de la valeur vénale (jusqu'en 2028), entretien forfaitaire 20 % ; cotisations sociales salariales 6,4 % ; part salariale LPP = 50 % des bonifications ; LPP créditée au taux minimal ; 3a versé au maximum par défaut ; ordre de décaissement liquidités → placements → 3b ; excédent au-delà de 12 mois de dépenses placé.
 
 ### 5.5 Sources (meta.sources + page Méthode)
 OFAS (bsv.admin.ch), ahv-iv.ch (mémentos), AFC/ESTV (charge fiscale, barèmes IFD, liste CDI), OFS (espérance de vie), fedlex (LAVS, LPP, LIFD, OPP2, OPP3).
@@ -132,20 +139,22 @@ OFAS (bsv.admin.ch), ahv-iv.ch (mémentos), AFC/ESTV (charge fiscale, barèmes I
 
 | # | Élément | Statut |
 |---|---|---|
-| V1 | Valeurs 2027 (§5.1) — reprises du cahier des charges, non recoupées en ligne (sites admin.ch inaccessibles depuis le conteneur) | à confirmer |
-| V2 | Taux d'intérêt minimal LPP 2027 | inconnu |
-| V3 | Taux d'anticipation/ajournement AVS ≥ 2027 (adaptation espérance de vie, taux bas revenus) | inconnu |
-| V4 | Taux réduits d'anticipation de la génération transitoire (bas revenus) | à décider : v1 simplifiée ? |
-| V5 | Espérance de vie à 65 ans (tables OFS les plus récentes) | ≈ 20 / 23 |
-| V6 | Barèmes IFD art. 36 2026 et 2027 (seul / couple, correction progression à froid) | à saisir depuis AFC |
-| V7 | Charge fiscale cantonale (26 chefs-lieux) revenu, fortune et capital de prévoyance | à saisir depuis AFC |
-| V8 | Liste OFAS des conventions de sécurité sociale (Albanie, Tunisie, Kosovo : dates d'entrée en vigueur ; Royaume-Uni post-Brexit) | à confirmer |
-| V9 | Conventions « limitées » (Chine, Inde, Japon, Corée du Sud : export des rentes ?) | à confirmer pays par pays |
-| V10 | Liste des CDI en vigueur (SFI/AFC) | à saisir |
-| V11 | France : imposition des capitaux LPP/3a (prélèvement forfaitaire, abattement) — fiche pays uniquement | à confirmer |
-| V12 | Portugal : fin du RNH → régime IFICI | à confirmer |
-| V13 | Arrondis officiels de l'échelle 44 (tables de rentes) vs formule continue | écart attendu < 1 CHF |
-| V14 | Lacunes AVS rachetables : délai de 5 ans (cotisations arriérées) | à confirmer |
+| V1 | Valeurs 2027 (§5.1) | ✅ confirmé — fiche OFAS « Montants valables à partir du 1.1.2027 » (CF 02.10.2026) |
+| V2 | Taux d'intérêt minimal LPP 2027 | ✅ 2 % — CF 04.11.2026 |
+| V3 | Taux d'anticipation/ajournement AVS ≥ 2027 (espérance de vie) | ⏳ non publiés au 16.11.2026 → taux 2026, `flexRatesConfirmed: false`, badge « taux à confirmer » |
+| V4 | Taux réduits d'anticipation des femmes de la génération transitoire (bas revenus) + supplément de rente | ⏳ non modélisés en v1 (taux standards) — à valider |
+| V5 | Espérance de vie à 65 ans | ✅ OFS 2024 : 20,4 (H) / 23,0 (F) (2025 hommes 20,7 publié ; femmes 2025 non confirmé) |
+| V6 | Barèmes IFD 2026 et 2027 | ✅ Form. 58c 2026 (reconstitué et testé ligne à ligne) ; OPFr 2027 art. 2 |
+| V7 | Charge fiscale cantonale (26 chefs-lieux) | ✅ calculateur AFC, année fiscale 2026 (les données 2027 du calculateur semblent provisoires : IFD 2'688 ≠ 2'668 officiel à 100k) |
+| V8 | Liste OFAS des conventions de sécurité sociale | Phase 4 |
+| V9 | Conventions « limitées » (Chine, Inde, Japon, Corée du Sud) | Phase 4 |
+| V10 | Liste des CDI en vigueur (SFI) | Phase 4 |
+| V11 | France : imposition des capitaux LPP/3a — fiche pays uniquement | Phase 4 |
+| V12 | Portugal : fin du RNH → IFICI | Phase 4 |
+| V13 | Arrondis de l'échelle 44 (tables) vs formule continue | ouvert (écart < 1 CHF/mois) |
+| V14 | Rattrapage des cotisations AVS sur 5 ans (art. 16 al. 1 LAVS) | à confirmer sur fedlex |
+| V15 | Paliers 2027 des cotisations AVS des non-actifs | ⏳ seule la cotisation minimale 541 fr. est publiée |
+| V16 | Hypothèses de modélisation (§5.4 bis) | à valider par l'utilisateur |
 
 ## 7. Moteur (résumé de spécification)
 
@@ -209,8 +218,8 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 | Phase | Contenu | Statut |
 |---|---|---|
 | 0 | Cadrage : CLAUDE.md, arborescence, TODO VERIFY, questions, logo vectoriel | ✅ validé (16.11.2026) |
-| 1 | Fondations, tokens, polices, logo/PWA/OG, composants UI, page `/ui`, déploiement Netlify | ✅ livré, en attente de validation |
-| 2 | Moteur complet + Vitest ≥ 90 % + CLI démo | — |
+| 1 | Fondations, tokens, polices, logo/PWA/OG, composants UI, page `/ui`, déploiement Netlify | ✅ validé |
+| 2 | Moteur complet + Vitest ≥ 90 % + CLI démo | ✅ livré, en attente de validation |
 | 3 | Onboarding + rapport 9 blocs + URL/localStorage | — |
 | 4 | Carte du monde + fiches + liste | — |
 | 5 | Conseils, export PDF, partage, landing, Méthode | — |
@@ -234,7 +243,16 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 - Contraste : `src/styles/tokens.test.ts` vérifie AA pour chaque couple texte/fond.
 - Bundle initial Phase 1 : ~110 ko gzip (React 19 + Motion core).
 
-## 15. Environnement
+## 15. Moteur — API et conventions (Phase 2)
+
+- Point d'entrée : `computeReport(profile, assumptions, strategy?, chf?)` (`src/engine/index.ts`) → plan annuel, 4 scénarios, rente/capital, optimiseur, logement, rachat, courbe AVS, conseils. ~12 ms pour le profil test.
+- `Profile` (qui je suis), `Assumptions` (hypothèses), `Strategy` (décisions : âges, part capital, retraits 3a, rachats, amortissement) — `src/engine/profile.ts`. `defaultStrategy()` dans `strategy.ts`.
+- `simulatePlan()` (`cashflow.ts`) : boucle annuelle, montants nominaux, `deflator` pour les francs d'aujourd'hui. La synthèse se lit la 1re année où tout le ménage est retraité (+1 an, après les retraits en capital).
+- Tests : `src/engine/__tests__/` (123 tests, couverture moteur ≈ 98 %, seuils 90/85/90/90 dans `vite.config.ts`).
+- Démo : `npm run demo` (sortie de référence dans `docs/demo-marc-sophie.txt`).
+- Données cantonales : `npm run fetch:cantons 2026` régénère le JSON (≈ 1'500 requêtes, ~6 min).
+
+## 16. Environnement
 
 - Session cloud sur l'environnement « ma-retraite-franco-suisse » : sites officiels autorisés (bsv, ahv-iv, estv, swisstaxcalculator.estv, fedlex, bfs, sif, news.admin.ch, admin.ch + sites FR). npm OK. `api.netlify.com` bloqué (inutile).
 - Conteneur éphémère : pousser régulièrement sur GitHub.

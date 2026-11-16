@@ -5,20 +5,43 @@ import path from 'node:path';
 import opentype from 'opentype.js';
 
 const out = process.argv[2];
-const F = (f) => { const b = fs.readFileSync(`node_modules/@fontsource/literata/files/${f}`); return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength)); };
+const F = (f) => {
+  const b = fs.readFileSync(`node_modules/@fontsource/literata/files/${f}`);
+  return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength));
+};
 const italic = F('literata-latin-400-italic.woff');
 const bold = F('literata-latin-700-normal.woff');
 
 const C = {
-  navy: '#1A2A49', blue: '#0055A3', red: '#DA281B', redFr: '#EE4135', sky: '#E6F0F8',
-  alp: '#C7D8E9', meadow: '#A3C67D', pole: '#6E5C45', fur: '#9B6B40', furDark: '#6E4A2B',
-  outline: '#4E3220', belly: '#D9B48A', muzzle: '#EDD5AE', ear: '#E3A98A', cheek: '#F0A8A0',
-  nose: '#3B2416', mouth: '#5A2A1E', choco: '#6B3A20', chocoLine: '#4A2614', wrap: '#F3EBD8',
-  wrapRed: '#D2302A', white: '#FFFFFF',
+  navy: '#1A2A49',
+  blue: '#0055A3',
+  red: '#DA281B',
+  redFr: '#EE4135',
+  sky: '#E6F0F8',
+  alp: '#C7D8E9',
+  meadow: '#A3C67D',
+  pole: '#6E5C45',
+  fur: '#9B6B40',
+  furDark: '#6E4A2B',
+  outline: '#4E3220',
+  belly: '#D9B48A',
+  muzzle: '#EDD5AE',
+  ear: '#E3A98A',
+  cheek: '#F0A8A0',
+  nose: '#3B2416',
+  mouth: '#5A2A1E',
+  choco: '#6B3A20',
+  chocoLine: '#4A2614',
+  wrap: '#F3EBD8',
+  wrapRed: '#D2302A',
+  white: '#FFFFFF',
 };
 
 // Roundel drawn in the original 1715×2000 raster coordinate space.
-const CX = 857, CY = 818, R = 648, RING = 28;
+const CX = 857,
+  CY = 818,
+  R = 648,
+  RING = 28;
 
 const roundel = `
 <defs>
@@ -92,23 +115,36 @@ const roundel = `
 // opentype.js toPathData() emits NaN for some values; serialise commands ourselves.
 const n = (v) => (Math.round(v * 100) / 100).toString();
 function toD(p) {
-  return p.commands.map((c) => c.type === 'Z' ? 'Z'
-    : c.type === 'Q' ? `Q${n(c.x1)} ${n(c.y1)} ${n(c.x)} ${n(c.y)}`
-    : c.type === 'C' ? `C${n(c.x1)} ${n(c.y1)} ${n(c.x2)} ${n(c.y2)} ${n(c.x)} ${n(c.y)}`
-    : `${c.type}${n(c.x)} ${n(c.y)}`).join('');
+  return p.commands
+    .map((c) =>
+      c.type === 'Z'
+        ? 'Z'
+        : c.type === 'Q'
+          ? `Q${n(c.x1)} ${n(c.y1)} ${n(c.x)} ${n(c.y)}`
+          : c.type === 'C'
+            ? `C${n(c.x1)} ${n(c.y1)} ${n(c.x2)} ${n(c.y2)} ${n(c.x)} ${n(c.y)}`
+            : `${c.type}${n(c.x)} ${n(c.y)}`,
+    )
+    .join('');
 }
 function textPath(font, str, x, y, size, fill) {
   return `<path fill="${fill}" d="${toD(font.getPath(str, x, y, size, { kerning: false }))}"/>`;
 }
-function width(font, str, size) { return font.getAdvanceWidth(str, size, { kerning: false }); }
+function width(font, str, size) {
+  return font.getAdvanceWidth(str, size, { kerning: false });
+}
 
 function wordmark(cx, y1, y2, s1, s2, align = 'center') {
   const w1 = width(italic, 'Ma retraite', s1);
-  const wf = width(bold, 'Franco', s2), wh = width(bold, '-', s2), wa = wf + wh, wb = width(bold, 'Suisse', s2);
+  const wf = width(bold, 'Franco', s2),
+    wh = width(bold, '-', s2),
+    wa = wf + wh,
+    wb = width(bold, 'Suisse', s2);
   const x1 = align === 'center' ? cx - w1 / 2 : cx;
   const x2 = align === 'center' ? cx - (wa + wb) / 2 : cx;
   return {
-    svg: textPath(italic, 'Ma retraite', x1, y1, s1, C.navy) +
+    svg:
+      textPath(italic, 'Ma retraite', x1, y1, s1, C.navy) +
       textPath(bold, 'Franco', x2, y2, s2, C.blue) +
       textPath(bold, '-', x2 + wf, y2, s2, C.navy) +
       textPath(bold, 'Suisse', x2 + wa, y2, s2, C.red),
@@ -122,13 +158,22 @@ const TITLE = 'Ma retraite Franco-Suisse';
 
 // 1. Full stacked logo (same framing as brand/logo.png)
 const wm = wordmark(857, 1662, 1842, 110, 176);
-fs.writeFileSync(path.join(out, 'logo.svg'), svg('0 0 1715 2000', `<rect width="1715" height="2000" fill="#fff"/>${roundel}${wm.svg}`, TITLE));
+fs.writeFileSync(
+  path.join(out, 'logo.svg'),
+  svg('0 0 1715 2000', `<rect width="1715" height="2000" fill="#fff"/>${roundel}${wm.svg}`, TITLE),
+);
 // 1b. Transparent, tight crop
-fs.writeFileSync(path.join(out, 'logo-stacked.svg'), svg('170 130 1375 1770', roundel + wm.svg, TITLE));
+fs.writeFileSync(
+  path.join(out, 'logo-stacked.svg'),
+  svg('170 130 1375 1770', roundel + wm.svg, TITLE),
+);
 // 2. Mark only (round, includes flag overhang)
 fs.writeFileSync(path.join(out, 'logo-mark.svg'), svg('190 150 1335 1336', roundel, TITLE));
 // 3. Horizontal compact: mark + wordmark on the right (height = roundel)
 const hx = 1560;
 const hw = wordmark(hx, 770, 1190, 300, 470, 'left');
-fs.writeFileSync(path.join(out, 'logo-horizontal.svg'), svg(`190 150 ${hx - 190 + hw.w + 40} 1336`, roundel + hw.svg, TITLE));
+fs.writeFileSync(
+  path.join(out, 'logo-horizontal.svg'),
+  svg(`190 150 ${hx - 190 + hw.w + 40} 1336`, roundel + hw.svg, TITLE),
+);
 console.log('ok');

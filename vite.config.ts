@@ -61,7 +61,8 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      include: ['src/engine/**/*.ts', 'src/lib/**/*.ts'],
+      include: ['src/engine/**/*.ts', 'src/lib/format.ts'],
+      thresholds: { statements: 90, branches: 85, functions: 90, lines: 90 },
       exclude: ['**/*.test.ts', '**/__tests__/**'],
     },
   },

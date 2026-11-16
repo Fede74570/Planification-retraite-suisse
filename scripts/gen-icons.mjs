@@ -16,7 +16,8 @@ fs.mkdirSync(icons, { recursive: true });
 const mark = fs.readFileSync(path.join(root, 'brand/logo-mark.svg'), 'utf8');
 const horizontal = fs.readFileSync(path.join(root, 'brand/logo-horizontal.svg'), 'utf8');
 // Fonts are inlined as data URLs (a page built with setContent cannot load file:// URLs).
-const font = (f) => `data:font/woff2;base64,${fs.readFileSync(path.join(root, 'node_modules', f)).toString('base64')}`;
+const font = (f) =>
+  `data:font/woff2;base64,${fs.readFileSync(path.join(root, 'node_modules', f)).toString('base64')}`;
 
 fs.copyFileSync(path.join(root, 'brand/logo-mark.svg'), path.join(icons, 'favicon.svg'));
 

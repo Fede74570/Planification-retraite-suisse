@@ -1,0 +1,124 @@
+
+=== Ma retraite Franco-Suisse — « Marc et Sophie » (VD) — paramètres 2027 ===
+Calcul complet : 11.5 ms
+
+— Synthèse (francs d’aujourd’hui)
+┌─────────────────────────────────┬───────────────┐
+│ (index)                         │ Values        │
+├─────────────────────────────────┼───────────────┤
+│ Revenu net / mois à la retraite │ "CHF 8'182"   │
+│ Besoin / mois                   │ "CHF 9'358"   │
+│ Taux de remplacement (net)      │ '80 %'        │
+│ Patrimoine tient jusqu’à        │ '82 ans'      │
+│ Patrimoine net à 85 ans         │ "CHF 788'082" │
+│ Patrimoine net à 95 ans         │ "CHF 836'567" │
+│ Impôts cumulés (réels)          │ "CHF 673'540" │
+└─────────────────────────────────┴───────────────┘
+— Revenu mensuel à la retraite par source
+┌──────────┬─────────────┐
+│ (index)  │ Values      │
+├──────────┼─────────────┤
+│ avs      │ "CHF 4'160" │
+│ lpp      │ "CHF 3'925" │
+│ drawdown │ "CHF 1'807" │
+│ rental   │ 'CHF 0'     │
+│ taxes    │ "CHF 1'711" │
+└──────────┴─────────────┘
+— Départs à la retraite
+┌─────────┬───────────┬───────┬───────────────┬────────────┬────────────────┬─────────────┬───────────────────┬─────────┐
+│ (index) │ personne  │ année │ avoir LPP     │ taux conv. │ rente LPP / an │ capital LPP │ AVS / mois (base) │ âge AVS │
+├─────────┼───────────┼───────┼───────────────┼────────────┼────────────────┼─────────────┼───────────────────┼─────────┤
+│ 0       │ 'main'    │ 2031  │ "CHF 610'000" │ '5,6 %'    │ "CHF 34'160"   │ 'CHF 0'     │ "CHF 1'920"       │ 65      │
+│ 1       │ 'partner' │ 2033  │ "CHF 240'316" │ '6,8 %'    │ "CHF 16'341"   │ 'CHF 0'     │ "CHF 1'920"       │ 65      │
+└─────────┴───────────┴───────┴───────────────┴────────────┴────────────────┴─────────────┴───────────────────┴─────────┘
+— Quand partir ? (scénarios)
+┌─────────┬──────────────┬─────┬─────────────┬──────────────┬────────────────┬───────────────┬───────────────┬────────────┐
+│ (index) │ scénario     │ âge │ net / mois  │ remplacement │ impôts cumulés │ patrimoine 85 │ patrimoine 95 │ épuisement │
+├─────────┼──────────────┼─────┼─────────────┼──────────────┼────────────────┼───────────────┼───────────────┼────────────┤
+│ 0       │ 'ordinary'   │ 65  │ "CHF 8'182" │ '80 %'       │ "CHF 673'540"  │ "CHF 788'082" │ "CHF 836'567" │ 82         │
+│ 1       │ 'early'      │ 63  │ "CHF 7'216" │ '75 %'       │ "CHF 568'035"  │ "CHF 788'082" │ "CHF 836'567" │ 77         │
+│ 2       │ 'partial'    │ 65  │ "CHF 7'655" │ '90,6 %'     │ "CHF 605'006"  │ "CHF 788'082" │ "CHF 836'567" │ 78         │
+│ 3       │ 'deferred ★' │ 67  │ "CHF 9'015" │ '86,9 %'     │ "CHF 777'754"  │ "CHF 838'610" │ "CHF 836'567" │ 87         │
+└─────────┴──────────────┴─────┴─────────────┴──────────────┴────────────────┴───────────────┴───────────────┴────────────┘
+— Rente ou capital (Marc)
+┌────────────────────────────────────────────┬────────────────┐
+│ (index)                                    │ Values         │
+├────────────────────────────────────────────┼────────────────┤
+│ Impôt sur le capital                       │ "CHF 47'918"   │
+│ Capital net                                │ "CHF 562'082"  │
+│ Rente nette an 1                           │ "CHF 27'016"   │
+│ Âge d’équilibre                            │ 85             │
+│ Épuisement prudent / équilibré / dynamique │ '85 / 88 / 94' │
+│ Capital restant à 85 (équilibré)           │ "CHF 88'367"   │
+│ Capital restant à 95 (équilibré)           │ 'CHF 0'        │
+└────────────────────────────────────────────┴────────────────┘
+— Impôts : échelonnement des retraits
+┌─────────┬────────────────┬──────────────┬────────────────┐
+│ (index) │ retrait        │ montant      │ année optimale │
+├─────────┼────────────────┼──────────────┼────────────────┤
+│ 0       │ 'main-3a-1'    │ "CHF 47'834" │ 2030           │
+│ 1       │ 'main-3a-2'    │ "CHF 81'508" │ 2031           │
+│ 2       │ 'partner-3a-1' │ "CHF 99'519" │ 2033           │
+└─────────┴────────────────┴──────────────┴────────────────┘
+┌────────────────────┬──────────────┐
+│ (index)            │ Values       │
+├────────────────────┼──────────────┤
+│ Tout la même année │ "CHF 12'909" │
+│ Échelonné          │ "CHF 7'342"  │
+│ Économie           │ "CHF 5'567"  │
+│ Méthode            │ 'exhaustive' │
+└────────────────────┴──────────────┘
+Rachat LPP : CHF 30'000/an en 2028, 2029, 2030 → −CHF 27'108 d’impôts
+— Logement
+┌─────────────────────────────────┬───────────────┐
+│ (index)                         │ Values        │
+├─────────────────────────────────┼───────────────┤
+│ Tenue des charges aujourd’hui   │ '24,6 %'      │
+│ Tenue des charges à la retraite │ '42 %'        │
+│ Verdict                         │ 'amortize'    │
+│ Amortissement suggéré           │ "CHF 191'000" │
+└─────────────────────────────────┴───────────────┘
+— Plan dans le temps (extrait, nominal)
+┌─────────┬───────┬─────┬───────────────┬──────────────┬──────────────┬───────────────┬──────────────┬──────────────────────┬─────────────────┐
+│ (index) │ année │ âge │ salaire       │ AVS          │ LPP          │ dépenses      │ impôts       │ patrimoine financier │ net total       │
+├─────────┼───────┼─────┼───────────────┼──────────────┼──────────────┼───────────────┼──────────────┼──────────────────────┼─────────────────┤
+│ 0       │ 2027  │ 61  │ "CHF 185'000" │ 'CHF 0'      │ 'CHF 0'      │ "CHF 114'000" │ "CHF 36'789" │ "CHF 475'641"        │ "CHF 1'781'301" │
+│ 1       │ 2030  │ 64  │ "CHF 193'450" │ 'CHF 0'      │ 'CHF 0'      │ "CHF 117'454" │ "CHF 34'081" │ "CHF 496'850"        │ "CHF 2'015'650" │
+│ 2       │ 2031  │ 65  │ "CHF 63'682"  │ "CHF 34'631" │ "CHF 34'160" │ "CHF 106'766" │ "CHF 26'109" │ "CHF 492'155"        │ "CHF 1'424'700" │
+│ 3       │ 2033  │ 67  │ 'CHF 0'       │ "CHF 52'991" │ "CHF 50'501" │ "CHF 108'912" │ "CHF 24'606" │ "CHF 463'391"        │ "CHF 1'193'367" │
+│ 4       │ 2036  │ 70  │ 'CHF 0'       │ "CHF 54'597" │ "CHF 50'501" │ "CHF 112'212" │ "CHF 21'685" │ "CHF 386'475"        │ "CHF 1'158'266" │
+│ 5       │ 2039  │ 73  │ 'CHF 0'       │ "CHF 56'251" │ "CHF 50'501" │ "CHF 115'612" │ "CHF 21'124" │ "CHF 298'729"        │ "CHF 1'113'601" │
+│ 6       │ 2042  │ 76  │ 'CHF 0'       │ "CHF 57'956" │ "CHF 50'501" │ "CHF 119'115" │ "CHF 20'482" │ "CHF 199'235"        │ "CHF 1'058'495" │
+│ 7       │ 2045  │ 79  │ 'CHF 0'       │ "CHF 59'712" │ "CHF 50'501" │ "CHF 122'725" │ "CHF 19'729" │ "CHF 87'030"         │ "CHF 992'022"   │
+│ 8       │ 2048  │ 82  │ 'CHF 0'       │ "CHF 61'521" │ "CHF 50'501" │ "CHF 126'443" │ "CHF 18'854" │ 'CHF 0'              │ "CHF 952'110"   │
+│ 9       │ 2051  │ 85  │ 'CHF 0'       │ "CHF 63'385" │ "CHF 50'501" │ "CHF 130'275" │ "CHF 19'179" │ 'CHF 0'              │ "CHF 1'000'655" │
+│ 10      │ 2054  │ 88  │ 'CHF 0'       │ "CHF 65'306" │ "CHF 50'501" │ "CHF 134'222" │ "CHF 19'562" │ 'CHF 0'              │ "CHF 1'050'672" │
+│ 11      │ 2057  │ 91  │ 'CHF 0'       │ "CHF 67'285" │ "CHF 50'501" │ "CHF 138'289" │ "CHF 19'956" │ 'CHF 0'              │ "CHF 1'102'204" │
+│ 12      │ 2060  │ 94  │ 'CHF 0'       │ "CHF 69'323" │ "CHF 50'501" │ "CHF 142'480" │ "CHF 20'366" │ 'CHF 0'              │ "CHF 1'155'297" │
+└─────────┴───────┴─────┴───────────────┴──────────────┴──────────────┴───────────────┴──────────────┴──────────────────────┴─────────────────┘
+— Conseils
+● Rente ou capital, chiffré — Âge d’équilibre: 85 ans
+    · Capital restant à 85 ans : CHF 0 à CHF 248'089 selon le rendement.
+    · La rente gagne si vous vivez au-delà de 85 ans. Le mixte limite le risque.
+● L’inflation grignote votre rente — Pouvoir d’achat de CHF 9'358 dans 20 ans: CHF 7'670
+    · Avec 1 % d’inflation, CHF 9'358 aujourd’hui valent CHF 7'670 dans 20 ans.
+    · La rente LPP ne suit pas les prix. Gardez une part indexée.
+● Planifiez plus loin que prévu — Horizon de planification: 95 ans
+    · Espérance de vie moyenne : 85 ans. Une personne sur deux vit plus longtemps.
+    · Fonds d’urgence conseillé : CHF 112'300, soit 12 mois de dépenses.
+● Placez votre épargne par tranches — À placer à long terme: CHF 190'135
+    · Court terme CHF 112'300 en liquidités, moyen terme CHF 106'936 en placements équilibrés.
+    · Long terme au-delà de 10 ans : actions, pour viser plus de rendement.
+○ Patrimoine épuisé trop tôt — Épuisement du patrimoine: 82 ans
+    · Il manquerait environ CHF 3'067 par mois ensuite.
+    · Partir plus tard ou réduire les dépenses comble l’écart.
+○ Rachat LPP : impôts en moins — Économie d’impôt estimée: CHF 27'108
+    · Racheter CHF 30'000 par an pendant 3 ans.
+    · Aucun retrait en capital dans les 3 ans suivant un rachat.
+○ Échelonnez vos retraits — Économie vs tout la même année: CHF 5'567
+    · Retirez 3a et capital LPP sur plusieurs années fiscales.
+    · Les retraits d’un couple la même année s’additionnent.
+
+À confirmer :
+- Taux d’anticipation et d’ajournement AVS adaptés à l’espérance de vie (AVS 21) : non publiés au 16.11.2026, taux 2026 utilisés.
+- Barème des cotisations AVS des non-actifs 2027 : seule la cotisation minimale (541 fr.) est publiée, paliers 2026 utilisés.
