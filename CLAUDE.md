@@ -219,7 +219,7 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 ## 13. Décisions de cadrage (16.11.2026)
 
 - **URL de production** : https://swiss-retirement-planning.netlify.app — l'utilisateur relie lui-même le dépôt GitHub à Netlify (pas de déploiement depuis le conteneur, pas de jeton Netlify).
-- **Dépôt GitHub** : `Fede74570/Ma-Retraite-Franco-Suisse` (déjà existant, contenu au 14.11.2026 à examiner avant tout push).
+- **Dépôt GitHub** : `Fede74570/planification-retraite-suisse` (branche `main`), relié à Netlify par l'utilisateur.
 - **Frontaliers** : l'imposition à la source des frontaliers n'est **pas** modélisée. Le moteur fiscal couvre les résidents en Suisse ; la France est traitée dans la carte du monde.
 - **Logo** : pas de source vectorielle fournie → vectorisation produite (`brand/*.svg`, texte en Literata vectorisé). La marmotte animée de l'onboarding dérivera de `#mrfs-marmot`.
 
