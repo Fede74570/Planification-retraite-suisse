@@ -55,7 +55,7 @@ public/
 scripts/
   demo-cli.ts                     # Phase 2 : tableau console du profil test
   gen-logo.mjs                    # régénère brand/*.svg (opentype.js + Literata, texte vectorisé)
-  gen-icons.ts                    # icônes PWA + OG depuis brand/logo-mark.svg
+  gen-icons.mjs                   # icônes PWA + OG (Playwright) depuis brand/*.svg
 src/
   main.tsx  App.tsx  router.tsx
   engine/                         # PUR, aucun import React
@@ -209,7 +209,7 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 | Phase | Contenu | Statut |
 |---|---|---|
 | 0 | Cadrage : CLAUDE.md, arborescence, TODO VERIFY, questions, logo vectoriel | ✅ validé (16.11.2026) |
-| 1 | Fondations, tokens, polices, logo/PWA/OG, composants UI, page `/ui`, déploiement Netlify | — |
+| 1 | Fondations, tokens, polices, logo/PWA/OG, composants UI, page `/ui`, déploiement Netlify | ✅ livré, en attente de validation |
 | 2 | Moteur complet + Vitest ≥ 90 % + CLI démo | — |
 | 3 | Onboarding + rapport 9 blocs + URL/localStorage | — |
 | 4 | Carte du monde + fiches + liste | — |
@@ -223,7 +223,18 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 - **Frontaliers** : l'imposition à la source des frontaliers n'est **pas** modélisée. Le moteur fiscal couvre les résidents en Suisse ; la France est traitée dans la carte du monde.
 - **Logo** : pas de source vectorielle fournie → vectorisation produite (`brand/*.svg`, texte en Literata vectorisé). La marmotte animée de l'onboarding dérivera de `#mrfs-marmot`.
 
-## 14. Environnement
+## 14. Conventions techniques (Phase 1)
+
+- Routage par chemin (`/`, `/ui`) sans librairie ; le **hash est réservé à l'état** de simulation.
+- Motion : `LazyMotion` + composants `m.*` (mode `strict`), fonctionnalités chargées en différé (`src/lib/motionFeatures.ts`) ; `MotionConfig reducedMotion="user"`.
+- Tokens CSS préfixés `--fs-*` (tailles), `--r-*` (rayons), `--sh-*` (ombres) pour ne pas entrer en collision avec le thème Tailwind ; exposés via `@theme inline` dans `src/styles/index.css`.
+- Polices : Inter (UI) et Literata (titres, comme le logo), sous-ensemble latin, auto-hébergées (`src/styles/fonts.css`).
+- Format des montants : `src/lib/format.ts` impose l'apostrophe ASCII (`CHF 1'250`) quel que soit l'ICU du navigateur.
+- `vite preview` applique la CSP de `netlify.toml` (détection locale des violations).
+- Contraste : `src/styles/tokens.test.ts` vérifie AA pour chaque couple texte/fond.
+- Bundle initial Phase 1 : ~110 ko gzip (React 19 + Motion core).
+
+## 15. Environnement
 
 - Session cloud sur l'environnement « ma-retraite-franco-suisse » : sites officiels autorisés (bsv, ahv-iv, estv, swisstaxcalculator.estv, fedlex, bfs, sif, news.admin.ch, admin.ch + sites FR). npm OK. `api.netlify.com` bloqué (inutile).
 - Conteneur éphémère : pousser régulièrement sur GitHub.

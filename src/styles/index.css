@@ -1,0 +1,179 @@
+@import 'tailwindcss';
+@import './fonts.css';
+@import './tokens.css';
+
+/* Expose tokens to Tailwind utilities (bg-paper, text-ink, rounded-card…). */
+@theme inline {
+  --color-navy: var(--navy);
+  --color-blue-fr: var(--blue-fr);
+  --color-red-ch: var(--red-ch);
+  --color-sky: var(--sky);
+  --color-alp: var(--alp);
+  --color-meadow: var(--meadow);
+  --color-marmot: var(--marmot);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-red-ink: var(--red-ink);
+  --color-meadow-ink: var(--meadow-ink);
+  --color-marmot-ink: var(--marmot-ink);
+  --color-alp-ink: var(--alp-ink);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-sunken: var(--surface-sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-warning: var(--warning);
+
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Literata Variable', ui-serif, Georgia, serif;
+
+  --text-xs: var(--fs-xs);
+  --text-sm: var(--fs-sm);
+  --text-base: var(--fs-base);
+  --text-lg: var(--fs-lg);
+  --text-xl: var(--fs-xl);
+  --text-2xl: var(--fs-2xl);
+  --text-3xl: var(--fs-3xl);
+  --text-kpi: var(--fs-kpi);
+
+  --radius-card: var(--r-card);
+  --shadow-card: var(--sh-card);
+  --shadow-float: var(--sh-float);
+  --ease-out: var(--ease);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-base);
+    line-height: 1.5;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  ::selection {
+    background: var(--alp);
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .pb-safe {
+    padding-bottom: var(--safe-bottom);
+  }
+  .pt-safe {
+    padding-top: var(--safe-top);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 100ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 100ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Range slider skin (Slider.tsx). Native input keeps keyboard & AT support. */
+.mrfs-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+  touch-action: pan-y;
+}
+.mrfs-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--accent) var(--pct), var(--line-strong) var(--pct));
+}
+.mrfs-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line-strong);
+}
+.mrfs-range::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.mrfs-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -11px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow:
+    0 0 0 0.5px rgb(26 42 73 / 0.12),
+    0 2px 6px rgb(26 42 73 / 0.22);
+  transition: transform var(--dur-fast) var(--ease);
+}
+.mrfs-range::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow:
+    0 0 0 0.5px rgb(26 42 73 / 0.12),
+    0 2px 6px rgb(26 42 73 / 0.22);
+}
+.mrfs-range:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+.mrfs-range:focus-visible {
+  outline: none;
+}
+.mrfs-range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+.mrfs-range:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}

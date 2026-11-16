@@ -1,0 +1,111 @@
+/*
+ * Design tokens — "Alpine clarity".
+ * Brand colours are sampled from brand/logo.png. Text pairs are checked for
+ * WCAG AA in src/styles/tokens.test.ts (any change here must keep it green).
+ */
+:root {
+  /* Brand (never use --meadow, --alp or --marmot for body text) */
+  --navy: #1a2a49;
+  --blue-fr: #0055a3;
+  --red-ch: #da281b;
+  --sky: #e6f0f8;
+  --alp: #c7d8e9;
+  --meadow: #a3c67d;
+  --marmot: #9b6b40;
+  --paper: #fcfbf8;
+  --white: #ffffff;
+
+  /* Text-safe variants (AA on paper, sky and white) */
+  --ink: var(--navy);
+  --ink-muted: #56627a;
+  --red-ink: #b8210f;
+  --meadow-ink: #3d6b22;
+  --marmot-ink: #7a522c;
+  --alp-ink: #4d6a87;
+
+  /* Semantic surfaces */
+  --bg: var(--paper);
+  --surface: var(--white);
+  --surface-sunken: var(--sky);
+  --line: #e3e7ee;
+  --line-strong: #c9d1dd;
+  --accent: var(--blue-fr);
+  --accent-contrast: var(--white);
+  --danger: var(--red-ch);
+  --positive: var(--meadow-ink);
+  --warning: #9a5b00;
+  --focus: #0055a3;
+
+  /* Chart palette (pillar → colour) */
+  --chart-avs: var(--red-ch);
+  --chart-lpp: var(--blue-fr);
+  --chart-p3: var(--meadow);
+  --chart-invest: var(--marmot);
+  --chart-cash: var(--alp);
+  --chart-need: var(--navy);
+
+  /* Shape */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-card: 20px;
+  --r-pill: 999px;
+
+  /* Soft layered shadows */
+  --sh-sm: 0 1px 2px rgb(26 42 73 / 0.06), 0 1px 1px rgb(26 42 73 / 0.04);
+  --sh-card:
+    0 1px 2px rgb(26 42 73 / 0.04), 0 4px 12px rgb(26 42 73 / 0.05),
+    0 16px 32px -8px rgb(26 42 73 / 0.08);
+  --sh-float:
+    0 2px 4px rgb(26 42 73 / 0.06), 0 12px 24px rgb(26 42 73 / 0.1),
+    0 32px 64px -16px rgb(26 42 73 / 0.18);
+
+  /* Fluid type scale (360 → 1280 px) */
+  --fs-xs: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem);
+  --fs-sm: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+  --fs-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --fs-lg: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem);
+  --fs-xl: clamp(1.375rem, 1.27rem + 0.45vw, 1.625rem);
+  --fs-2xl: clamp(1.75rem, 1.55rem + 0.9vw, 2.25rem);
+  --fs-3xl: clamp(2.25rem, 1.9rem + 1.6vw, 3.25rem);
+  --fs-kpi: clamp(2.5rem, 2rem + 2.4vw, 4rem);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
+
+  /* Layout */
+  --panel-width: 360px;
+  --tabbar-height: 64px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Dark theme — prepared, opt-in via data-theme="dark" (v1 ships light only). */
+:root[data-theme='dark'] {
+  --ink: #e8eef7;
+  --ink-muted: #a7b3c6;
+  --red-ink: #ff8a7e;
+  --meadow-ink: #b9dc93;
+  --marmot-ink: #d9b48a;
+  --alp-ink: #a9c1da;
+  --bg: #0f1829;
+  --surface: #17233a;
+  --surface-sunken: #1d2b45;
+  --line: #26354f;
+  --line-strong: #344764;
+  --accent: #5aa2ec;
+  --accent-contrast: #0f1829;
+  --focus: #8cc0f5;
+  --chart-need: #e8eef7;
+  --sh-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 100ms;
+    --dur-base: 100ms;
+    --dur-slow: 100ms;
+  }
+}

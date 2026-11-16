@@ -129,6 +129,6 @@ fs.writeFileSync(path.join(out, 'logo-stacked.svg'), svg('170 130 1375 1770', ro
 fs.writeFileSync(path.join(out, 'logo-mark.svg'), svg('190 150 1335 1336', roundel, TITLE));
 // 3. Horizontal compact: mark + wordmark on the right (height = roundel)
 const hx = 1560;
-const hw = wordmark(hx, 760, 1010, 190, 300, 'left');
+const hw = wordmark(hx, 770, 1190, 300, 470, 'left');
 fs.writeFileSync(path.join(out, 'logo-horizontal.svg'), svg(`190 150 ${hx - 190 + hw.w + 40} 1336`, roundel + hw.svg, TITLE));
 console.log('ok');
