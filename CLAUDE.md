@@ -1,7 +1,7 @@
 # CLAUDE.md — Ma Retraite Franco-Suisse
 
 > Mémoire du projet. À relire au début de chaque session, à mettre à jour à chaque phase.
-> Phase en cours : **0 · Cadrage** (en attente de validation).
+> Phase en cours : **1 · Fondations et design system**.
 
 ## 1. Vision
 
@@ -46,11 +46,16 @@ Budgets : JS initial < 180 ko gzip (carte + Recharts en lazy), LCP < 2 s en 4G, 
 CLAUDE.md  README.md  netlify.toml  index.html  vite.config.ts  tsconfig*.json
 brand/
   logo.png  logo.webp            # fourni (1715×2000) — ne jamais déformer/recolorer
+  logo.svg                       # vectorisation fidèle (même cadrage que le PNG, fond blanc)
+  logo-stacked.svg               # empilé, fond transparent, recadré
+  logo-mark.svg                  # rond seul (favicon, PWA, filigrane)
+  logo-horizontal.svg            # rond + texte à droite (en-tête)
 public/
   icons/ (favicon, apple-touch, pwa-192/512, maskable)  og-image.png  fonts/
 scripts/
   demo-cli.ts                     # Phase 2 : tableau console du profil test
-  gen-icons.ts                    # icônes PWA + OG depuis brand/logo.png
+  gen-logo.mjs                    # régénère brand/*.svg (opentype.js + Literata, texte vectorisé)
+  gen-icons.ts                    # icônes PWA + OG depuis brand/logo-mark.svg
 src/
   main.tsx  App.tsx  router.tsx
   engine/                         # PUR, aucun import React
@@ -137,7 +142,7 @@ OFAS (bsv.admin.ch), ahv-iv.ch (mémentos), AFC/ESTV (charge fiscale, barèmes I
 | V8 | Liste OFAS des conventions de sécurité sociale (Albanie, Tunisie, Kosovo : dates d'entrée en vigueur ; Royaume-Uni post-Brexit) | à confirmer |
 | V9 | Conventions « limitées » (Chine, Inde, Japon, Corée du Sud : export des rentes ?) | à confirmer pays par pays |
 | V10 | Liste des CDI en vigueur (SFI/AFC) | à saisir |
-| V11 | France : imposition des capitaux LPP/3a (prélèvement forfaitaire, abattement), frontaliers (accord 1983, Genève) | à confirmer |
+| V11 | France : imposition des capitaux LPP/3a (prélèvement forfaitaire, abattement) — fiche pays uniquement | à confirmer |
 | V12 | Portugal : fin du RNH → régime IFICI | à confirmer |
 | V13 | Arrondis officiels de l'échelle 44 (tables de rentes) vs formule continue | écart attendu < 1 CHF |
 | V14 | Lacunes AVS rachetables : délai de 5 ans (cotisations arriérées) | à confirmer |
@@ -203,7 +208,7 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 
 | Phase | Contenu | Statut |
 |---|---|---|
-| 0 | Cadrage : CLAUDE.md, arborescence, TODO VERIFY, questions | ✅ livré, en attente de validation |
+| 0 | Cadrage : CLAUDE.md, arborescence, TODO VERIFY, questions, logo vectoriel | ✅ validé (16.11.2026) |
 | 1 | Fondations, tokens, polices, logo/PWA/OG, composants UI, page `/ui`, déploiement Netlify | — |
 | 2 | Moteur complet + Vitest ≥ 90 % + CLI démo | — |
 | 3 | Onboarding + rapport 9 blocs + URL/localStorage | — |
@@ -211,8 +216,15 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 | 5 | Conseils, export PDF, partage, landing, Méthode | — |
 | 6 | Finitions motion, a11y, Lighthouse ≥ 95, e2e, relecture | — |
 
-## 13. Contraintes d'environnement constatées (16.11.2026)
+## 13. Décisions de cadrage (16.11.2026)
 
-- Conteneur cloud éphémère : le code doit être poussé sur un dépôt Git pour survivre.
-- Réseau : npm OK ; `*.admin.ch`, `ahv-iv.ch`, `api.netlify.com` **bloqués** → vérification des sources officielles et déploiement Netlify impossibles sans ouverture réseau ou action de l'utilisateur.
+- **URL de production** : https://swiss-retirement-planning.netlify.app — l'utilisateur relie lui-même le dépôt GitHub à Netlify (pas de déploiement depuis le conteneur, pas de jeton Netlify).
+- **Dépôt GitHub** : `Fede74570/Ma-Retraite-Franco-Suisse` (déjà existant, contenu au 14.11.2026 à examiner avant tout push).
+- **Frontaliers** : l'imposition à la source des frontaliers n'est **pas** modélisée. Le moteur fiscal couvre les résidents en Suisse ; la France est traitée dans la carte du monde.
+- **Logo** : pas de source vectorielle fournie → vectorisation produite (`brand/*.svg`, texte en Literata vectorisé). La marmotte animée de l'onboarding dérivera de `#mrfs-marmot`.
+
+## 14. Environnement
+
+- Session cloud sur l'environnement « ma-retraite-franco-suisse » : sites officiels autorisés (bsv, ahv-iv, estv, swisstaxcalculator.estv, fedlex, bfs, sif, news.admin.ch, admin.ch + sites FR). npm OK. `api.netlify.com` bloqué (inutile).
+- Conteneur éphémère : pousser régulièrement sur GitHub.
 - Skills design listés au §2.4 : non installés.
