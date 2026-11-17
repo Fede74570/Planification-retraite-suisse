@@ -49,7 +49,14 @@ export interface CapitalVsAnnuityResult {
   breakEvenAge: number | null;
   paths: Record<ReturnProfile, CapitalPath>;
   /** Mixed option (share capital / share annuity), balanced profile. */
-  mixed: { annuity: number; capital: number; at85: number; at95: number };
+  mixed: {
+    share: number;
+    annuity: number;
+    capital: number;
+    at85: number;
+    at95: number;
+    balances: number[];
+  };
   deflators: number[];
 }
 
@@ -146,6 +153,8 @@ export function compareCapitalVsAnnuity(i: CapitalVsAnnuityInput): CapitalVsAnnu
     breakEvenAge,
     paths,
     mixed: {
+      share,
+      balances: mixedPath.balances,
       annuity: mixedAnnuity,
       capital: mixedCapital,
       at85: valueAt(mixedPath.balances, 85),

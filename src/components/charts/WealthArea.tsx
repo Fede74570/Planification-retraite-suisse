@@ -76,7 +76,7 @@ export function WealthArea({
   const lastAge = data.at(-1)?.age ?? 95;
   return (
     <div ref={ref} className="w-full" aria-hidden="true">
-      <svg width={width} height={h}>
+      <svg key={width} width={width} height={h}>
         {lifeExpectancyAge < lastAge && (
           <g>
             <rect

@@ -178,6 +178,8 @@ describe('Annuity vs capital', () => {
     expect(r.paths.dynamic.at85).toBeGreaterThanOrEqual(r.paths.balanced.at85);
     expect(r.paths.balanced.at85).toBeGreaterThanOrEqual(r.paths.prudent.at85);
     expect(r.mixed.annuity).toBeCloseTo(300_000 * 0.056);
+    expect(r.mixed.share).toBe(0.5);
+    expect(r.mixed.balances).toHaveLength(r.ages.length);
   });
   it('real equals nominal at zero inflation', () => {
     const z = compareCapitalVsAnnuity({
@@ -207,6 +209,7 @@ describe('Report and advice', () => {
       'horizon',
       'buckets',
     ]);
+    expect(mandatory[3]!.buckets).toBeDefined();
     expect(report.advice.filter((c) => !c.mandatory).length).toBeLessThanOrEqual(3);
     for (const c of report.advice) {
       expect(c.bullets.length).toBeLessThanOrEqual(2);

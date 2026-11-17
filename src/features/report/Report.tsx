@@ -5,6 +5,7 @@ import { useApp } from '@/state/store';
 import { CapitalBlock, PlanBlock, ScenariosBlock } from './blocks/DecisionBlocks';
 import { AdviceBlock, HousingBlock, TaxBlock } from './blocks/MoneyBlocks';
 import { HeroBlock, PillarsBlock, TodayBlock } from './blocks/SummaryBlocks';
+import { PrintFrame } from './PrintFrame';
 
 /** The report: 9 short blocks (§7), each 1 KPI + 1 visual + 1 sentence. */
 export function Report({ report, only }: { report: EngineReport; only?: 'scenarios' | 'advice' }) {
@@ -23,18 +24,20 @@ export function Report({ report, only }: { report: EngineReport; only?: 'scenari
       </div>
     );
   return (
-    <div className="flex flex-col gap-4">
-      <HeroBlock report={report} />
-      <TodayBlock report={report} index={1} />
-      <PillarsBlock report={report} index={2} />
-      <CapitalBlock report={report} index={3} />
-      <ScenariosBlock report={report} index={4} />
-      <PlanBlock report={report} index={5} />
-      <TaxBlock report={report} index={6} />
-      <HousingBlock report={report} index={7} />
-      <AdviceBlock report={report} index={8} />
-      <ReportFooter report={report} />
-    </div>
+    <PrintFrame>
+      <div className="flex flex-col gap-4">
+        <HeroBlock report={report} />
+        <TodayBlock report={report} index={1} />
+        <PillarsBlock report={report} index={2} />
+        <CapitalBlock report={report} index={3} />
+        <ScenariosBlock report={report} index={4} />
+        <PlanBlock report={report} index={5} />
+        <TaxBlock report={report} index={6} />
+        <HousingBlock report={report} index={7} />
+        <AdviceBlock report={report} index={8} />
+        <ReportFooter report={report} />
+      </div>
+    </PrintFrame>
   );
 }
 

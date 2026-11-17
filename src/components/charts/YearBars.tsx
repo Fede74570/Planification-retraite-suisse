@@ -26,7 +26,7 @@ export function YearBars({ bars }: { bars: YearBar[] }) {
     .range([h - pb, pt]);
   return (
     <div ref={ref} className="w-full" aria-hidden="true">
-      <svg width={width} height={h}>
+      <svg key={width} width={width} height={h}>
         <line x1={0} x2={width} y1={h - pb} y2={h - pb} stroke="var(--line-strong)" />
         {bars.map((b) => {
           const total = b.parts.reduce((s, p) => s + p.value, 0);

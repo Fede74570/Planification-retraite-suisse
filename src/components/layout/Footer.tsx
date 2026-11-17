@@ -17,6 +17,26 @@ export function Footer({ withDisclaimer = true }: { withDisclaimer?: boolean }) 
         Vos données restent sur votre appareil.
       </p>
       {withDisclaimer && <p className="mt-2 max-w-3xl">{DISCLAIMER}</p>}
+      <nav aria-label="Pied de page" className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+        <a
+          href="/"
+          className="inline-flex min-h-11 items-center font-semibold text-ink hover:text-accent"
+        >
+          Accueil
+        </a>
+        <a
+          href="/methode"
+          className="inline-flex min-h-11 items-center font-semibold text-ink hover:text-accent"
+        >
+          Méthode et sources
+        </a>
+        <a
+          href="/app"
+          className="inline-flex min-h-11 items-center font-semibold text-ink hover:text-accent"
+        >
+          Ma simulation
+        </a>
+      </nav>
     </footer>
   );
 }

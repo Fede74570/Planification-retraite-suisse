@@ -178,24 +178,89 @@
   outline-offset: 3px;
 }
 
-/* Minimal print stylesheet (full PDF layout in Phase 5). */
+/* Print / PDF export (« Exporter PDF » → window.print()). */
+.print-frame,
+.print-frame > tbody,
+.print-frame > tbody > tr,
+.print-frame > tbody > tr > td {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+}
+.print-frame > thead,
+.print-frame > tfoot {
+  display: none;
+}
 @media print {
   @page {
-    margin: 14mm;
+    size: A4;
+    margin: 12mm 12mm 14mm;
   }
+  html,
   body {
-    background: #fff;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-frame {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .print-frame > thead {
+    display: table-header-group;
+  }
+  .print-frame > tfoot {
+    display: table-footer-group;
+  }
+  .print-frame > tbody {
+    display: table-row-group;
+  }
+  .print-frame > tbody > tr {
+    display: table-row;
+  }
+  .print-frame > tbody > tr > td {
+    display: table-cell;
+  }
+  .print-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 6mm;
+    font-size: 10pt;
+    color: var(--ink-muted);
+  }
+  .print-foot {
+    display: flex;
+    align-items: center;
+    gap: 3mm;
+    padding-top: 4mm;
+    font-size: 8pt;
+    color: var(--ink-muted);
   }
   .report-block,
-  .report-block * {
-    /* In-view animations must never hide content on paper. */
+  .reveal {
+    /* In-view entrance animations must never hide content on paper (charts keep their transforms). */
     opacity: 1 !important;
     transform: none !important;
   }
   .report-block {
     break-inside: avoid;
-    box-shadow: none;
+    box-shadow: none !important;
     border: 1px solid var(--line);
+    margin-bottom: 4mm;
+  }
+  /* Interactive-only controls disappear; values stay visible. */
+  .report-block button:not([role='radio']),
+  .report-block input[type='range'],
+  nav,
+  aside,
+  [role='tooltip'] {
+    display: none !important;
+  }
+  header.sticky {
+    display: none !important;
   }
 }
 

@@ -1,7 +1,7 @@
 # CLAUDE.md — Ma Retraite Franco-Suisse
 
 > Mémoire du projet. À relire au début de chaque session, à mettre à jour à chaque phase.
-> Phase en cours : **4 · Carte du monde** (livré, en attente de validation).
+> Phase en cours : **5 · Conseils, export, accueil** (livré, en attente de validation).
 
 ## 1. Vision
 
@@ -222,8 +222,8 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 | 1 | Fondations, tokens, polices, logo/PWA/OG, composants UI, page `/ui`, déploiement Netlify | ✅ validé |
 | 2 | Moteur complet + Vitest ≥ 90 % + CLI démo | ✅ validé |
 | 3 | Onboarding + rapport 9 blocs + URL/localStorage | ✅ validé |
-| 4 | Carte du monde + fiches + liste | ✅ livré, en attente de validation |
-| 5 | Conseils, export PDF, partage, landing, Méthode | — |
+| 4 | Carte du monde + fiches + liste | ✅ validé |
+| 5 | Conseils, export PDF, partage, landing, Méthode | ✅ livré, en attente de validation |
 | 6 | Finitions motion, a11y, Lighthouse ≥ 95, e2e, relecture | — |
 
 ## 13. Décisions de cadrage (16.11.2026)
@@ -274,7 +274,18 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 - Accès : onglet « Monde » (mobile), bascule « Rapport | Monde » dans l'en-tête (desktop), conseil « Ouvrir la carte ».
 - Micro-États absents du 110m (Liechtenstein, Malte, Saint-Marin…) : recherche et liste.
 
-## 18. Environnement
+## 18. Conseils, export, accueil, Méthode — conventions (Phase 5)
+
+- Conseils : cartes en cascade (`whileInView`, classe `reveal`), coche animée « Appliqué », visuel des 3 seaux (`AdviceCard.buckets` issu de `splitBuckets`). Les actions passent par `applyAdviceAction` (moteur).
+- Rente/capital : `compareCapitalVsAnnuity().mixed` expose `share` et `balances` ; le crossover affiche la courbe « mixte » dès que le curseur > 0 %, et la phrase du bloc donne capital restant à 85 ans + rente mensuelle.
+- Export PDF : `window.print()` ; le rapport est enveloppé dans `features/report/PrintFrame.tsx` (table dont `thead`/`tfoot` se répètent sur chaque page : logo + date / avertissement + confidentialité). CSS d'impression dans `index.css` : A4, couleurs exactes, panneau, onglets, en-tête collant, boutons et curseurs masqués ; seules les classes `.report-block` et `.reveal` sont forcées visibles (ne jamais forcer `transform: none` sur les SVG). « Exporter PDF » repasse sur l'onglet Rapport avant d'imprimer. Les graphiques se remontent à chaque changement de largeur (`<svg key={width}>`) pour éviter une transition figée à l'impression.
+- Partage : feuille de partage native sur mobile (`navigator.share`), sinon copie du lien ; avertissement « le lien contient vos chiffres ».
+- Accueil `/` : hero avec montagnes en parallaxe (`ParallaxMountains`, `useScroll`, transform seul), promesse, CTA « Calculer ma retraite », « Essayer avec un exemple », 3 preuves, « Ce que vous saurez » (7 questions), « Comment ça marche », confidentialité et sources. Pas de marmotte (réservée à l'onboarding, aux états vides et à l'écran « rapport prêt »).
+- Méthode `/methode` (chargée en différé) : formules en langage clair, tableaux de valeurs lus dans `getParams()` (2026/2027), grille cantonale (année, date de génération), hypothèses par défaut, points « à confirmer » (`meta.pending`), liste dédupliquée des sources officielles avec dates. Aucun chiffre saisi à la main.
+- Pied de page : liens Accueil · Méthode et sources · Ma simulation.
+- E2E (8 tests) : + accueil → Méthode → application, + impression (en-tête/pied, blocs visibles, PDF généré).
+
+## 19. Environnement
 
 - Session cloud sur l'environnement « ma-retraite-franco-suisse » : sites officiels autorisés (bsv, ahv-iv, estv, swisstaxcalculator.estv, fedlex, bfs, sif, news.admin.ch, admin.ch + sites FR). npm OK. `api.netlify.com` bloqué (inutile).
 - Conteneur éphémère : pousser régulièrement sur GitHub.

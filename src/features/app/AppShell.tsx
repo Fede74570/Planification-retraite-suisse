@@ -24,15 +24,36 @@ export function AppShell() {
   const [sheet, setSheet] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
+  const notify = (msg: string) => {
+    setToast(msg);
+    window.setTimeout(() => setToast(null), 3500);
+  };
   const share = async () => {
     const url = window.location.href;
+    // Native share sheet on mobile (the link stays on the device until the user picks a target).
+    if (!desktop && typeof navigator.share === 'function') {
+      try {
+        await navigator.share({
+          title: 'Ma retraite Franco-Suisse',
+          text: 'Ma simulation de retraite (le lien contient mes chiffres)',
+          url,
+        });
+        return;
+      } catch {
+        /* cancelled: fall back to copying */
+      }
+    }
     try {
       await navigator.clipboard.writeText(url);
-      setToast('Lien copié. Attention : il contient vos chiffres.');
+      notify('Lien copié. Attention : il contient vos chiffres.');
     } catch {
-      setToast('Copiez l’adresse de la page. Elle contient vos chiffres.');
+      notify('Copiez l’adresse de la page. Elle contient vos chiffres.');
     }
-    window.setTimeout(() => setToast(null), 3500);
+  };
+  // The PDF always contains the full report, whatever view is open.
+  const exportPdf = () => {
+    if (tab !== 'report') setTab('report');
+    window.setTimeout(() => window.print(), tab !== 'report' ? 400 : 0);
   };
 
   const s = report.plan.summary;
@@ -58,7 +79,7 @@ export function AppShell() {
             </div>
           )}
           <div className="flex items-center gap-2 print:hidden">
-            <Button variant="secondary" onClick={() => window.print()} aria-label="Exporter en PDF">
+            <Button variant="secondary" onClick={exportPdf} aria-label="Exporter en PDF">
               <PrintIcon />
               <span className="hidden whitespace-nowrap sm:inline">Exporter PDF</span>
             </Button>
@@ -77,7 +98,7 @@ export function AppShell() {
           </Suspense>
         </main>
       ) : desktop ? (
-        <div className="mx-auto grid max-w-[1440px] grid-cols-[var(--panel-width)_1fr] gap-6 px-6">
+        <div className="mx-auto grid max-w-[1440px] grid-cols-[var(--panel-width)_1fr] gap-6 px-6 print:block print:px-0">
           <aside
             aria-label="Vos critères"
             className="sticky top-[61px] h-[calc(100dvh-61px)] overflow-y-auto overscroll-contain py-6 pr-2 print:hidden"

@@ -37,7 +37,7 @@ export function MiniCurve({
   const sel = points.find((p) => p.x === Math.round(selected)) ?? points[0];
   return (
     <div ref={ref} className="w-full" aria-hidden="true">
-      <svg width={width} height={h + 14}>
+      <svg key={width} width={width} height={h + 14}>
         <m.path
           d={d}
           initial={false}

@@ -13,6 +13,8 @@ interface CrossoverProps {
   dynamic: number[];
   breakEvenAge: number | null;
   netCapital: number;
+  /** Capital left with the mixed option (slider share), balanced profile. */
+  mixed?: number[];
 }
 
 /**
@@ -27,6 +29,7 @@ export function Crossover({
   dynamic,
   breakEvenAge,
   netCapital,
+  mixed,
 }: CrossoverProps) {
   const [ref, width] = useWidth<HTMLDivElement>(320);
   const h = 220,
@@ -54,11 +57,12 @@ export function Crossover({
       .curve(curveMonotoneX)(dynamic) ?? '';
   const annuityD = ln(pts(cumulativeAnnuity)) ?? '';
   const balancedD = ln(pts(balanced)) ?? '';
+  const mixedD = mixed ? (ln(pts(mixed)) ?? '') : '';
   const beIdx = breakEvenAge === null ? -1 : ages.indexOf(breakEvenAge);
   const ticks = y.ticks(4);
   return (
     <div ref={ref} className="w-full" aria-hidden="true">
-      <svg width={width} height={h}>
+      <svg key={width} width={width} height={h}>
         {ticks.map((t) => (
           <g key={t}>
             <line x1={pl} x2={width - pr} y1={y(t)} y2={y(t)} stroke="var(--line)" />
@@ -120,6 +124,18 @@ export function Crossover({
           stroke="var(--chart-invest)"
           strokeWidth={2.5}
         />
+        {mixed && (
+          <m.path
+            initial={false}
+            animate={{ d: mixedD }}
+            transition={springSoft}
+            fill="none"
+            stroke="var(--marmot-ink)"
+            strokeWidth={2}
+            strokeDasharray="1 4"
+            strokeLinecap="round"
+          />
+        )}
         <m.path
           initial={false}
           animate={{ d: annuityD }}

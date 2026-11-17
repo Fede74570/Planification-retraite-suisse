@@ -3,7 +3,7 @@
 Planification retraite suisse (AVS, LPP, 3e pilier, impôts, logement, départ à l'étranger) :
 un rapport visuel, recalculé en direct, **100 % dans le navigateur** (aucun backend, aucun tracking).
 
-Production : https://swiss-retirement-planning.netlify.app · Design system : `/ui`
+Production : https://swiss-retirement-planning.netlify.app · Application : `/app` (exemple : `/app#exemple`) · Méthode : `/methode` · Design system : `/ui`
 
 ## Lancer
 
@@ -22,6 +22,7 @@ Node ≥ 22.
 npm test           # Vitest (moteur, formatage, contraste des tokens)
 npm run coverage   # couverture (objectif moteur ≥ 90 %)
 npm run lint
+npm run e2e        # Playwright (build + preview avec la CSP de production)
 ```
 
 ## Moteur de calcul

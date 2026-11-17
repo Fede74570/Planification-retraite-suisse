@@ -4,6 +4,7 @@ import { Home } from '@/features/landing/Home';
 // Path-based routing only: the URL hash is reserved for the encoded simulation state.
 const UiPage = lazy(() => import('@/dev/UiPage'));
 const AppRoute = lazy(() => import('@/features/app/AppRoute'));
+const MethodPage = lazy(() => import('@/features/method/MethodPage'));
 
 export function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
@@ -11,6 +12,12 @@ export function App() {
     return (
       <Suspense fallback={null}>
         <UiPage />
+      </Suspense>
+    );
+  if (path === '/methode')
+    return (
+      <Suspense fallback={null}>
+        <MethodPage />
       </Suspense>
     );
   if (path === '/app' || window.location.hash.startsWith('#s='))

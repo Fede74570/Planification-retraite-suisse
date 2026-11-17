@@ -38,9 +38,11 @@ export function CapitalBlock({ report, index }: { report: Report; index: number 
       index={index}
       title="Rente ou capital ?"
       sentence={
-        c.breakEvenAge
-          ? `La rente rapporte plus que le capital si vous vivez au-delà de ${c.breakEvenAge} ans.`
-          : 'Sur votre horizon, le capital reste plus avantageux que la rente.'
+        share > 0
+          ? `Avec ${Math.round(share * 100)} % en capital, il vous resterait ${formatCHF(c.mixed.at85)} à 85 ans, plus une rente de ${formatCHF(c.mixed.annuity / 12)} par mois.`
+          : c.breakEvenAge
+            ? `La rente rapporte plus que le capital si vous vivez au-delà de ${c.breakEvenAge} ans.`
+            : 'Sur votre horizon, le capital reste plus avantageux que la rente.'
       }
       detail={
         <ul className="m-0 flex flex-col gap-1 pl-4">
@@ -105,6 +107,7 @@ export function CapitalBlock({ report, index }: { report: Report; index: number 
           dynamic={c.paths.dynamic.balances}
           breakEvenAge={c.breakEvenAge}
           netCapital={c.netCapital}
+          {...(share > 0 ? { mixed: c.mixed.balances } : {})}
         />
         <Legend
           className="mt-2"
@@ -113,6 +116,15 @@ export function CapitalBlock({ report, index }: { report: Report; index: number 
             { color: 'var(--navy)', label: 'Capital net au départ', dashed: true },
             { color: 'var(--chart-invest)', label: 'Capital restant (équilibré)' },
             { color: 'rgb(155 107 64 / 0.3)', label: 'Prudent à dynamique' },
+            ...(share > 0
+              ? [
+                  {
+                    color: 'var(--marmot-ink)',
+                    label: `Mixte : capital restant (${Math.round(share * 100)} %)`,
+                    dashed: true,
+                  },
+                ]
+              : []),
           ]}
         />
       </ChartFrame>

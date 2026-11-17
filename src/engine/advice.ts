@@ -42,6 +42,8 @@ export interface AdviceCard {
   };
   bullets: string[];
   action?: AdviceAction;
+  /** Data for the 3-bucket visual (investment strategy card). */
+  buckets?: BucketSplit;
   /** Higher = shown first among contextual cards. */
   priority: number;
 }
@@ -160,6 +162,7 @@ export function buildAdvice(i: AdviceInput): AdviceCard[] {
   const b = splitBuckets(wealth, annualGap, emergency);
   cards.push({
     id: 'buckets',
+    buckets: b,
     mandatory: true,
     icon: 'buckets',
     priority: 70,

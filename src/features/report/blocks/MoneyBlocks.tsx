@@ -247,7 +247,7 @@ export function AdviceCardView({ card, index }: { card: AdviceCard; index: numbe
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ ...spring, delay: index * 0.05 }}
-      className={`flex flex-col gap-2 rounded-[16px] p-4 ${card.mandatory ? 'bg-sunken' : 'bg-[#fbf0dc]/60 ring-1 ring-[#f0dcb4]'}`}
+      className={`reveal flex flex-col gap-2 rounded-[16px] p-4 ${card.mandatory ? 'bg-sunken' : 'bg-[#fbf0dc]/60 ring-1 ring-[#f0dcb4]'}`}
     >
       <div className="flex items-center gap-2">
         <span aria-hidden="true" className="text-lg">
@@ -261,6 +261,7 @@ export function AdviceCardView({ card, index }: { card: AdviceCard; index: numbe
           <span className="text-xs text-ink-muted">{card.keyFigure.label}</span>
         </p>
       )}
+      {card.buckets && <Buckets b={card.buckets} />}
       <ul className="m-0 flex flex-col gap-1 pl-4 text-sm text-ink-muted">
         {card.bullets.map((b) => (
           <li key={b}>{b}</li>
@@ -307,5 +308,45 @@ function CheckMark() {
         transition={{ duration: 0.3 }}
       />
     </svg>
+  );
+}
+
+/** Three buckets (short / mid / long term) filled proportionally to the amounts. */
+function Buckets({ b }: { b: NonNullable<AdviceCard['buckets']> }) {
+  const items = [
+    { label: 'Court terme', sub: '2–3 ans · liquidités', value: b.short, color: 'var(--alp)' },
+    { label: 'Moyen terme', sub: '3–10 ans · équilibré', value: b.mid, color: 'var(--blue-fr)' },
+    { label: 'Long terme', sub: '> 10 ans · actions', value: b.long, color: 'var(--marmot)' },
+  ];
+  const max = Math.max(1, ...items.map((i) => i.value));
+  return (
+    <div
+      className="grid grid-cols-3 gap-2"
+      role="img"
+      aria-label={items.map((i) => `${i.label} ${formatCHF(i.value)}`).join(', ')}
+    >
+      {items.map((i) => (
+        <div key={i.label} className="flex flex-col items-center gap-1 text-center">
+          <div
+            className="relative h-16 w-12 overflow-hidden rounded-b-[12px] rounded-t-[4px] border-2 border-t-0 border-line-strong bg-surface"
+            aria-hidden="true"
+          >
+            <m.div
+              className="absolute inset-x-0 bottom-0 h-full origin-bottom"
+              style={{ background: i.color }}
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: i.value / max }}
+              transition={spring}
+            />
+          </div>
+          <span className="tabular text-xs font-semibold text-ink">{formatCHF(i.value)}</span>
+          <span className="text-[10px] leading-tight text-ink-muted">
+            {i.label}
+            <br />
+            {i.sub}
+          </span>
+        </div>
+      ))}
+    </div>
   );
 }
