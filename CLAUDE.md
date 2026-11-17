@@ -1,7 +1,7 @@
 # CLAUDE.md — Ma Retraite Franco-Suisse
 
 > Mémoire du projet. À relire au début de chaque session, à mettre à jour à chaque phase.
-> Phase en cours : **2 · Moteur de calcul** (livré, en attente de validation).
+> Phase en cours : **3 · Onboarding et rapport** (livré, en attente de validation).
 
 ## 1. Vision
 
@@ -219,8 +219,8 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 |---|---|---|
 | 0 | Cadrage : CLAUDE.md, arborescence, TODO VERIFY, questions, logo vectoriel | ✅ validé (16.11.2026) |
 | 1 | Fondations, tokens, polices, logo/PWA/OG, composants UI, page `/ui`, déploiement Netlify | ✅ validé |
-| 2 | Moteur complet + Vitest ≥ 90 % + CLI démo | ✅ livré, en attente de validation |
-| 3 | Onboarding + rapport 9 blocs + URL/localStorage | — |
+| 2 | Moteur complet + Vitest ≥ 90 % + CLI démo | ✅ validé |
+| 3 | Onboarding + rapport 9 blocs + URL/localStorage | ✅ livré, en attente de validation |
 | 4 | Carte du monde + fiches + liste | — |
 | 5 | Conseils, export PDF, partage, landing, Méthode | — |
 | 6 | Finitions motion, a11y, Lighthouse ≥ 95, e2e, relecture | — |
@@ -252,7 +252,20 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 - Démo : `npm run demo` (sortie de référence dans `docs/demo-marc-sophie.txt`).
 - Données cantonales : `npm run fetch:cantons 2026` régénère le JSON (≈ 1'500 requêtes, ~6 min).
 
-## 16. Environnement
+## 16. Application — conventions (Phase 3)
+
+- Routes : `/` accueil (provisoire), `/app` application (chargée en différé), `/ui` storybook. `/app#exemple` charge Marc et Sophie. Un lien `#s=…` ouvre directement le rapport.
+- État : `src/state/store.ts` (Zustand) = `profile` + `assumptions` + `choices` + `mode` (+ UI : onglet, francs d'aujourd'hui). `startPersistence()` (appelé par la route `/app`) écrit l'état dans le hash (`replaceState`, base64url JSON versionné, `urlCodec.ts`) et dans localStorage (`mrfs:v1`), dès le démarrage puis 250 ms après chaque changement.
+- Choix utilisateur → stratégie : `src/engine/choices.ts` (`buildStrategy`, `applyAdviceAction`), pur et testé.
+- `useReport()` recalcule `computeReport` (mémoïsé) : mise à jour du KPI hero mesurée à 56–79 ms en e2e (objectif < 100 ms).
+- **Graphiques : SVG sur mesure + d3-scale/d3-shape pour tous les graphiques** (donut, barre empilée, courbe AVS, crossover, aire empilée, barres annuelles, jauges). Écart assumé avec « Recharts pour les graphiques standards » : morphing des chemins via Motion, ~0 ko ajouté contre ~100 ko pour Recharts. Chaque graphique est dans `ChartFrame` (filigrane du logo à 8 % + tableau de données masqué).
+- Blocs du rapport : `features/report/Block.tsx` (titre ≤ 6 mots, 1 phrase, « Voir le détail »), apparition en cascade (`whileInView`) ; à l'impression, opacité et transformation forcées (`index.css`).
+- Mobile < 1024 px : barre d'onglets (Rapport · Scénarios · Monde · Conseils), bouton flottant « Ajuster » → bottom sheet avec le panneau de critères, mini-barre KPI collante au-dessus de la sheet. Desktop : panneau 360 px collant + rapport.
+- Glossaire des info-bulles : `src/lib/glossary.ts` + composant `Term`.
+- E2E : `npm run e2e` (Playwright 1.63 = version du Chromium préinstallé ; build + `vite preview` avec CSP de production). 3 tests : onboarding mobile ≤ 12 taps sans scroll horizontal, KPI < 100 ms, lien partagé restauré.
+- Budgets : JS initial 112 ko gzip (accueil) ; route `/app` +48 ko en différé.
+
+## 17. Environnement
 
 - Session cloud sur l'environnement « ma-retraite-franco-suisse » : sites officiels autorisés (bsv, ahv-iv, estv, swisstaxcalculator.estv, fedlex, bfs, sif, news.admin.ch, admin.ch + sites FR). npm OK. `api.netlify.com` bloqué (inutile).
 - Conteneur éphémère : pousser régulièrement sur GitHub.

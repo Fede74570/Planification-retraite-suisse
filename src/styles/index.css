@@ -177,3 +177,24 @@
   outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
+
+/* Minimal print stylesheet (full PDF layout in Phase 5). */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  body {
+    background: #fff;
+  }
+  .report-block,
+  .report-block * {
+    /* In-view animations must never hide content on paper. */
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .report-block {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid var(--line);
+  }
+}

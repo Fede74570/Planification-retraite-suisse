@@ -19,27 +19,29 @@ export function ChartFrame({ label, children, table, className }: ChartFrameProp
       </div>
       <LogoWatermark />
       {table && (
-        <table className="sr-only">
-          <caption>{table.caption}</caption>
-          <thead>
-            <tr>
-              {table.columns.map((c) => (
-                <th key={c} scope="col">
-                  {c}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {table.rows.map((r, i) => (
-              <tr key={i}>
-                {r.map((v, j) => (
-                  <td key={j}>{v}</td>
+        <div className="sr-only">
+          <table>
+            <caption>{table.caption}</caption>
+            <thead>
+              <tr>
+                {table.columns.map((c) => (
+                  <th key={c} scope="col">
+                    {c}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {table.rows.map((r, i) => (
+                <tr key={i}>
+                  {r.map((v, j) => (
+                    <td key={j}>{v}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </figure>
   );

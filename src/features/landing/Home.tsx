@@ -45,9 +45,15 @@ export function Home() {
             transition={{ ...spring, delay: 0.12 }}
             className="flex flex-wrap items-center gap-3"
           >
-            <Button size="lg" disabled>
+            <Button size="lg" onClick={() => window.location.assign('/app')}>
               Calculer ma retraite
             </Button>
+            <a
+              href="/app#exemple"
+              className="inline-flex min-h-11 items-center px-2 text-sm font-semibold text-accent underline-offset-4 hover:underline"
+            >
+              Essayer avec un exemple
+            </a>
             <a
               href="/ui"
               className="inline-flex min-h-11 items-center px-2 text-sm font-semibold text-accent underline-offset-4 hover:underline"

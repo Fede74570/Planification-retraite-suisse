@@ -10,3 +10,6 @@ export { Slider } from './Slider';
 export { Stepper } from './Stepper';
 export { Toggle } from './Toggle';
 export { InfoTip } from './Tooltip';
+export { MoneyField } from './MoneyField';
+export { SelectField } from './SelectField';
+export { Term } from './Term';
