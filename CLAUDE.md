@@ -1,7 +1,7 @@
 # CLAUDE.md — Ma Retraite Franco-Suisse
 
 > Mémoire du projet. À relire au début de chaque session, à mettre à jour à chaque phase.
-> Phase en cours : **6 · Finitions** (livré, point de contrôle final en attente de validation).
+> Projet : **toutes les phases validées (17.11.2026)**. Suite possible : vérification sur appareils réels, levée des points V3, V4, V12–V17, mise à jour annuelle des paramètres.
 
 ## 1. Vision
 
@@ -224,7 +224,7 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 | 3 | Onboarding + rapport 9 blocs + URL/localStorage | ✅ validé |
 | 4 | Carte du monde + fiches + liste | ✅ validé |
 | 5 | Conseils, export PDF, partage, landing, Méthode | ✅ validé |
-| 6 | Finitions motion, a11y, Lighthouse ≥ 95, e2e, relecture | ✅ livré, en attente de validation |
+| 6 | Finitions motion, a11y, Lighthouse ≥ 95, e2e, relecture | ✅ validé (17.11.2026) |
 
 ## 13. Décisions de cadrage (16.11.2026)
 
