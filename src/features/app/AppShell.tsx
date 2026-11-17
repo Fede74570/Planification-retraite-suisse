@@ -1,9 +1,9 @@
 import { AnimatePresence, m } from 'motion/react';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Logo } from '@/components/brand/Logo';
 import { Marmot } from '@/components/brand/Marmot';
 import { Footer } from '@/components/layout/Footer';
-import { Button, Sheet } from '@/components/ui';
+import { Button, Segmented, Sheet } from '@/components/ui';
 import { formatCHF } from '@/lib/format';
 import { spring } from '@/lib/motion';
 import { useMediaQuery } from '@/lib/useMediaQuery';
@@ -11,6 +11,9 @@ import { useApp, type Tab } from '@/state/store';
 import { useReport } from '@/state/useReport';
 import { CriteriaPanel } from '../settings/CriteriaPanel';
 import { Report } from '../report/Report';
+
+// The map (d3-geo, topojson, world atlas) is loaded only when the « Monde » view opens.
+const WorldMapView = lazy(() => import('../map/WorldMapView'));
 
 /** Desktop: criteria panel (360 px) + live report. Mobile: tab bar, « Ajuster » bottom sheet, sticky KPI bar. */
 export function AppShell() {
@@ -40,10 +43,24 @@ export function AppShell() {
           <a href="/" aria-label="Accueil — Ma retraite Franco-Suisse">
             <Logo height={44} />
           </a>
+          {desktop && (
+            <div className="w-56 print:hidden">
+              <Segmented
+                size="sm"
+                label="Vue"
+                value={tab === 'world' ? 'world' : 'report'}
+                onChange={(v) => setTab(v)}
+                options={[
+                  { value: 'report', label: 'Rapport' },
+                  { value: 'world', label: 'Monde' },
+                ]}
+              />
+            </div>
+          )}
           <div className="flex items-center gap-2 print:hidden">
             <Button variant="secondary" onClick={() => window.print()} aria-label="Exporter en PDF">
               <PrintIcon />
-              <span className="hidden sm:inline">Exporter PDF</span>
+              <span className="hidden whitespace-nowrap sm:inline">Exporter PDF</span>
             </Button>
             <Button variant="secondary" onClick={share} aria-label="Partager le lien">
               <ShareIcon />
@@ -53,7 +70,13 @@ export function AppShell() {
         </div>
       </header>
 
-      {desktop ? (
+      {desktop && tab === 'world' ? (
+        <main className="mx-auto max-w-[1440px] px-6 py-6">
+          <Suspense fallback={<MapLoading />}>
+            <WorldMapView />
+          </Suspense>
+        </main>
+      ) : desktop ? (
         <div className="mx-auto grid max-w-[1440px] grid-cols-[var(--panel-width)_1fr] gap-6 px-6">
           <aside
             aria-label="Vos critères"
@@ -80,7 +103,11 @@ export function AppShell() {
                 {tab === 'report' && <Report report={report} />}
                 {tab === 'scenarios' && <Report report={report} only="scenarios" />}
                 {tab === 'advice' && <Report report={report} only="advice" />}
-                {tab === 'world' && <WorldPlaceholder />}
+                {tab === 'world' && (
+                  <Suspense fallback={<MapLoading />}>
+                    <WorldMapView />
+                  </Suspense>
+                )}
               </m.div>
             </AnimatePresence>
           </main>
@@ -154,14 +181,14 @@ export function AppShell() {
   );
 }
 
-function WorldPlaceholder() {
+function MapLoading() {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-card bg-sky p-8 text-center">
-      <Marmot size={110} title="La marmotte prépare la carte" />
-      <p className="m-0 font-serif text-xl font-semibold">La carte du monde arrive bientôt</p>
-      <p className="m-0 text-sm text-ink-muted">
-        AVS, LPP et 3e pilier selon le pays de destination.
-      </p>
+    <div
+      className="flex flex-col items-center gap-3 rounded-card bg-sky p-8 text-center"
+      role="status"
+    >
+      <Marmot size={96} title="La marmotte prépare la carte" />
+      <p className="m-0 text-sm text-ink-muted">Chargement de la carte…</p>
     </div>
   );
 }

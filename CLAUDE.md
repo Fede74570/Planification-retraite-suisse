@@ -1,7 +1,7 @@
 # CLAUDE.md — Ma Retraite Franco-Suisse
 
 > Mémoire du projet. À relire au début de chaque session, à mettre à jour à chaque phase.
-> Phase en cours : **3 · Onboarding et rapport** (livré, en attente de validation).
+> Phase en cours : **4 · Carte du monde** (livré, en attente de validation).
 
 ## 1. Vision
 
@@ -146,11 +146,12 @@ OFAS (bsv.admin.ch), ahv-iv.ch (mémentos), AFC/ESTV (charge fiscale, barèmes I
 | V5 | Espérance de vie à 65 ans | ✅ OFS 2024 : 20,4 (H) / 23,0 (F) (2025 hommes 20,7 publié ; femmes 2025 non confirmé) |
 | V6 | Barèmes IFD 2026 et 2027 | ✅ Form. 58c 2026 (reconstitué et testé ligne à ligne) ; OPFr 2027 art. 2 |
 | V7 | Charge fiscale cantonale (26 chefs-lieux) | ✅ calculateur AFC, année fiscale 2026 (les données 2027 du calculateur semblent provisoires : IFD 2'688 ≠ 2'668 officiel à 100k) |
-| V8 | Liste OFAS des conventions de sécurité sociale | Phase 4 |
-| V9 | Conventions « limitées » (Chine, Inde, Japon, Corée du Sud) | Phase 4 |
-| V10 | Liste des CDI en vigueur (SFI) | Phase 4 |
-| V11 | France : imposition des capitaux LPP/3a — fiche pays uniquement | Phase 4 |
-| V12 | Portugal : fin du RNH → IFICI | Phase 4 |
+| V8 | Liste OFAS des conventions de sécurité sociale | ✅ « Aperçu des conventions » OFAS, état 1.1.2026 (+ mémento 10.03) |
+| V9 | Conventions « limitées » | ✅ Chine, Corée du Sud, Inde = assujettissement seul (annotation 3) ; Japon = convention complète AVS/AI/AM |
+| V10 | Liste des CDI en vigueur (SFI) | ✅ SFI état 1.1.2026, tableau des dégrèvements (98 juridictions, `src/data/dta.json`) |
+| V11 | France : imposition des capitaux de prévoyance | ✅ brochure IR 2026 impots.gouv.fr : option 7,5 % après abattement 10 %, capital non fractionné, cotisations déductibles |
+| V12 | Portugal : fin du RNH → IFICI | ⏳ aucune source officielle portugaise accessible → puce « à confirmer » |
+| V17 | États-Unis : FATCA/PFIC | ⏳ affiché « à confirmer » (pas de source officielle consultée) |
 | V13 | Arrondis de l'échelle 44 (tables) vs formule continue | ouvert (écart < 1 CHF/mois) |
 | V14 | Rattrapage des cotisations AVS sur 5 ans (art. 16 al. 1 LAVS) | à confirmer sur fedlex |
 | V15 | Paliers 2027 des cotisations AVS des non-actifs | ⏳ seule la cotisation minimale 541 fr. est publiée |
@@ -220,8 +221,8 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 | 0 | Cadrage : CLAUDE.md, arborescence, TODO VERIFY, questions, logo vectoriel | ✅ validé (16.11.2026) |
 | 1 | Fondations, tokens, polices, logo/PWA/OG, composants UI, page `/ui`, déploiement Netlify | ✅ validé |
 | 2 | Moteur complet + Vitest ≥ 90 % + CLI démo | ✅ validé |
-| 3 | Onboarding + rapport 9 blocs + URL/localStorage | ✅ livré, en attente de validation |
-| 4 | Carte du monde + fiches + liste | — |
+| 3 | Onboarding + rapport 9 blocs + URL/localStorage | ✅ validé |
+| 4 | Carte du monde + fiches + liste | ✅ livré, en attente de validation |
 | 5 | Conseils, export PDF, partage, landing, Méthode | — |
 | 6 | Finitions motion, a11y, Lighthouse ≥ 95, e2e, relecture | — |
 
@@ -265,7 +266,15 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 - E2E : `npm run e2e` (Playwright 1.63 = version du Chromium préinstallé ; build + `vite preview` avec CSP de production). 3 tests : onboarding mobile ≤ 12 taps sans scroll horizontal, KPI < 100 ms, lien partagé restauré.
 - Budgets : JS initial 112 ko gzip (accueil) ; route `/app` +48 ko en différé.
 
-## 17. Environnement
+## 17. Carte du monde — conventions (Phase 4)
+
+- Données : `src/data/countries.ts` (régime par ISO3 : CH · EU_EFTA (30) · BILATERAL (19) · BILATERAL_LIMITED (CHN, KOR, IND) · NONE ; `dta` ; surcharges FRA, GBR, CAN, USA, PRT, TUN, THA, MAR + ITA/ESP/DEU sourcées), gabarits `regimeTemplates.ts` (≤ 2 puces × ≤ 12 mots, adaptés à la nationalité et à la CDI), fiche `countrySheet.ts`. Puce non vérifiée → `unverified: true` → « à confirmer ». Tests : `src/data/countries.test.ts` (limite de mots vérifiée sur 251 pays × 3 nationalités).
+- Codes pays : `npm run gen:countries` (`scripts/gen-countries.mjs`, i18n-iso-countries en dev) → `countryCodes.json` (numérique → ISO3 + nom français, Kosovo `XKX`, Chypre du Nord → CYP, Somaliland → SOM) et `dta.json`. Atlas `world-atlas` 110m copié dans `src/data/world-110m.json` (aucun appel réseau).
+- Carte : `features/map/` chargée en différé (chunk ≈ 76 ko gzip : d3-geo, d3-zoom, topojson, atlas). Projection Natural Earth ; tracé des contours 900 ms (`pathLength` + `stroke-dashoffset`), coloration en vagues (UE/AELE → conventions → reste), pulsation de la Suisse (taille constante au zoom), arc en grand cercle animé, zoom doux sur le territoire principal (hors DOM-TOM) décalé du panneau, pinch/drag/molette (d3-zoom), légende-filtre, hachures CDI, recherche combobox ARIA, puces populaires, sélecteur de nationalité (= `profile.nationality`), vue liste par catégorie, fiche en panneau (desktop) ou bottom sheet (mobile), export PNG canvas (Web Share ou téléchargement).
+- Accès : onglet « Monde » (mobile), bascule « Rapport | Monde » dans l'en-tête (desktop), conseil « Ouvrir la carte ».
+- Micro-États absents du 110m (Liechtenstein, Malte, Saint-Marin…) : recherche et liste.
+
+## 18. Environnement
 
 - Session cloud sur l'environnement « ma-retraite-franco-suisse » : sites officiels autorisés (bsv, ahv-iv, estv, swisstaxcalculator.estv, fedlex, bfs, sif, news.admin.ch, admin.ch + sites FR). npm OK. `api.netlify.com` bloqué (inutile).
 - Conteneur éphémère : pousser régulièrement sur GitHub.
