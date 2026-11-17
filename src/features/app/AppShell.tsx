@@ -79,7 +79,7 @@ export function AppShell() {
             </div>
           )}
           <div className="flex items-center gap-2 print:hidden">
-            <Button variant="secondary" onClick={exportPdf} aria-label="Exporter en PDF">
+            <Button variant="secondary" onClick={exportPdf} aria-label="Exporter PDF">
               <PrintIcon />
               <span className="hidden whitespace-nowrap sm:inline">Exporter PDF</span>
             </Button>

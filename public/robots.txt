@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /ui
+
+Sitemap: https://swiss-retirement-planning.netlify.app/sitemap.xml

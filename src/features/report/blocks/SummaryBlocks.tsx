@@ -203,6 +203,8 @@ export function PillarsBlock({ report, index }: { report: Report; index: number 
           L’AVS est indexée comme l’inflation (simplification de l’indice mixte). La rente LPP reste
           fixe. L’épargne consommée est un retrait régulier jusqu’à{' '}
           {useApp.getState().assumptions.horizonAge} ans.
+          {useApp.getState().profile.status === 'married' &&
+            ' Pour un couple marié, la courbe AVS inclut le plafond de 150 % de la rente maximale.'}
         </p>
       }
     >

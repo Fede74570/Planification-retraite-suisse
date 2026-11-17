@@ -5,6 +5,28 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import type { Plugin } from 'vite';
+
+/** Preloads the two above-the-fold font files (Inter + Literata, latin) to speed up LCP and avoid layout shifts. */
+function preloadFonts(): Plugin {
+  return {
+    name: 'preload-fonts',
+    apply: 'build',
+    transformIndexHtml(html, ctx) {
+      const files = Object.keys(ctx.bundle ?? {}).filter((f) =>
+        /(inter|literata)-latin-wght-normal-.*\.woff2$/.test(f),
+      );
+      return {
+        html,
+        tags: files.map((f) => ({
+          tag: 'link',
+          attrs: { rel: 'preload', href: `/${f}`, as: 'font', type: 'font/woff2', crossorigin: '' },
+          injectTo: 'head' as const,
+        })),
+      };
+    },
+  };
+}
 
 // `vite preview` serves the production CSP from netlify.toml so CSP issues show up locally.
 const csp =
@@ -18,6 +40,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    preloadFonts(),
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'script-defer', // external file: compatible with a strict CSP
@@ -48,8 +71,8 @@ export default defineConfig({
       },
       workbox: {
         // Only the latin font subsets are precached; other subsets load on demand.
-        globPatterns: ['**/*.{js,css,html,svg,png,webmanifest}', '**/*-latin-*.woff2'],
-        globIgnores: ['**/og-image.png'],
+        globPatterns: ['**/*.{js,css,html,svg,png,webmanifest,txt,xml}', '**/*-latin-*.woff2'],
+        globIgnores: ['**/og-image.png', '**/icons/splash/**'],
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
       },

@@ -57,6 +57,22 @@ svg.mt{position:absolute;left:0;bottom:0;width:1200px;height:150px}
 <svg class="mt" viewBox="0 0 1440 180" preserveAspectRatio="none"><path fill="#C7D8E9" opacity=".55" d="M0 140 L180 60 L300 110 L470 20 L640 120 L820 50 L980 110 L1160 30 L1300 90 L1440 60 V180 H0Z"/><path fill="#C7D8E9" d="M0 160 L240 100 L420 150 L600 90 L780 150 L960 100 L1180 150 L1440 100 V180 H0Z"/><path fill="#A3C67D" d="M0 168 Q720 140 1440 168 V180 H0Z"/></svg>
 </body></html>`;
 
+// iOS splash screens (apple-touch-startup-image), portrait: [width, height, css width, css height, dpr].
+const SPLASH = [
+  [1290, 2796, 430, 932, 3],
+  [1284, 2778, 428, 926, 3],
+  [1179, 2556, 393, 852, 3],
+  [1170, 2532, 390, 844, 3],
+  [1125, 2436, 375, 812, 3],
+  [828, 1792, 414, 896, 2],
+  [750, 1334, 375, 667, 2],
+];
+const stacked = fs.readFileSync(path.join(root, 'brand/logo-stacked.svg'), 'utf8');
+const splashHtml = (w, h) => {
+  const lw = Math.round(w * 0.46);
+  return `<html><body style="margin:0;width:${w}px;height:${h}px;display:grid;place-items:center;background:#FCFBF8">${sized(stacked, lw, Math.round((lw * 1770) / 1375))}</body></html>`;
+};
+
 const browser = await chromium.launch();
 const page = await browser.newPage();
 for (const i of ICONS) {
@@ -64,6 +80,19 @@ for (const i of ICONS) {
   await page.setContent(iconHtml(i.size, i.pad, i.bg));
   await page.screenshot({ path: path.join(icons, i.file), omitBackground: i.bg === null });
 }
+fs.mkdirSync(path.join(icons, 'splash'), { recursive: true });
+for (const [w, h] of SPLASH) {
+  await page.setViewportSize({ width: w, height: h });
+  await page.setContent(splashHtml(w, h));
+  await page.screenshot({ path: path.join(icons, 'splash', `splash-${w}x${h}.png`) });
+}
+fs.writeFileSync(
+  path.join(root, 'brand', 'splash-links.html'),
+  SPLASH.map(
+    ([w, h, cw, ch, dpr]) =>
+      `<link rel="apple-touch-startup-image" media="(device-width: ${cw}px) and (device-height: ${ch}px) and (-webkit-device-pixel-ratio: ${dpr}) and (orientation: portrait)" href="/icons/splash/splash-${w}x${h}.png" />`,
+  ).join('\n') + '\n',
+);
 await page.setViewportSize({ width: 1200, height: 630 });
 await page.setContent(ogHtml, { waitUntil: 'load' });
 await page.evaluate(() => globalThis.document.fonts.ready);

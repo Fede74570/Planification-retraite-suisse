@@ -1,7 +1,7 @@
 # CLAUDE.md — Ma Retraite Franco-Suisse
 
 > Mémoire du projet. À relire au début de chaque session, à mettre à jour à chaque phase.
-> Phase en cours : **5 · Conseils, export, accueil** (livré, en attente de validation).
+> Phase en cours : **6 · Finitions** (livré, point de contrôle final en attente de validation).
 
 ## 1. Vision
 
@@ -223,8 +223,8 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 | 2 | Moteur complet + Vitest ≥ 90 % + CLI démo | ✅ validé |
 | 3 | Onboarding + rapport 9 blocs + URL/localStorage | ✅ validé |
 | 4 | Carte du monde + fiches + liste | ✅ validé |
-| 5 | Conseils, export PDF, partage, landing, Méthode | ✅ livré, en attente de validation |
-| 6 | Finitions motion, a11y, Lighthouse ≥ 95, e2e, relecture | — |
+| 5 | Conseils, export PDF, partage, landing, Méthode | ✅ validé |
+| 6 | Finitions motion, a11y, Lighthouse ≥ 95, e2e, relecture | ✅ livré, en attente de validation |
 
 ## 13. Décisions de cadrage (16.11.2026)
 
@@ -285,7 +285,31 @@ Tests : AVS 2026 (15'120 → 1'260 ; 90'720 → 2'520), couple 2027 = 3'840 ; an
 - Pied de page : liens Accueil · Méthode et sources · Ma simulation.
 - E2E (8 tests) : + accueil → Méthode → application, + impression (en-tête/pied, blocs visibles, PDF généré).
 
-## 19. Environnement
+## 19. Finitions — conventions (Phase 6)
+
+- Lighthouse mobile : `npm run lighthouse` (après `npm run build` et `npm run preview -- --port 4173`) — échoue sous 95. Résultat au 17.11.2026 : **100 / 100 / 100 / 100** sur `/`, `/app#exemple`, `/methode` (build local).
+- Performance : titre et accroche de l'accueil sans animation d'entrée (élément LCP), polices Inter et Literata préchargées (plugin `preloadFonts` dans `vite.config.ts`), `robots.txt` + `sitemap.xml` dans `public/`.
+- Accessibilité : `e2e/a11y.spec.ts` (axe-core, WCAG 2.2 AA) sur accueil, Méthode, 4 étapes d'onboarding, rapport, bottom sheet, carte + fiche — 0 violation. Nom accessible = texte visible pour les boutons à icône.
+- Mouvement réduit : en `prefers-reduced-motion`, pas d'animation d'entrée des blocs ni des conseils (`initial={false}`), test e2e dédié.
+- Textes : toutes les puces de conseils ≤ 12 mots (test sur deux profils contrastés), puces pays déjà testées.
+- Courbe AVS 63→70 : plafond couple appliqué (`index.ts`), mentionné dans « Voir le détail ».
+- Écrans de démarrage iOS : 7 tailles générées par `npm run gen:icons` dans `public/icons/splash/`, liens dans `index.html` (copie dans `brand/splash-links.html`), exclus du précache PWA.
+- E2E : 10 scénarios × 2 projets (15 exécutés, 5 sautés par projet non pertinent).
+
+## 20. Définition de « terminé » (état au 17.11.2026)
+
+- [x] Recalcul en temps réel avec transitions animées (KPI < 100 ms mesuré).
+- [x] 9 blocs = 1 KPI + 1 visuel + 1 phrase.
+- [x] 4 conseils obligatoires chiffrés et personnalisés.
+- [x] Carte : UE/AELE, convention, convention limitée, aucune convention ; fiche AVS/LPP/3a/3b en puces.
+- [x] Logo : en-tête, graphiques, carte, PDF (chaque page), icônes, OG, écrans de démarrage.
+- [~] iPhone Safari / Android Chrome : testé en émulation Chromium (iPhone 13) uniquement ; à vérifier sur appareils réels. PWA installable (manifeste, icônes maskable, service worker).
+- [~] Paramètres légaux centralisés, sourcés, datés ; restent ouverts V3, V4, V12–V17 (accord de l'utilisateur requis).
+- [x] Lighthouse mobile ≥ 95 (100 partout, build local ; production non mesurée depuis le conteneur).
+- [x] Aucune donnée personnelle hors du navigateur (pas de backend, CSP `connect-src 'self'`).
+- [~] Netlify : dépôt relié par l'utilisateur, non vérifiable depuis le conteneur ; README à jour.
+
+## 21. Environnement
 
 - Session cloud sur l'environnement « ma-retraite-franco-suisse » : sites officiels autorisés (bsv, ahv-iv, estv, swisstaxcalculator.estv, fedlex, bfs, sif, news.admin.ch, admin.ch + sites FR). npm OK. `api.netlify.com` bloqué (inutile).
 - Conteneur éphémère : pousser régulièrement sur GitHub.

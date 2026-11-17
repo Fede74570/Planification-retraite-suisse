@@ -1,5 +1,11 @@
 import { buildAdvice, type AdviceCard } from './advice';
-import { avsClaimCurve, avsReferenceAge } from './avs';
+import {
+  avsClaimCurve,
+  avsFullMonthly,
+  avsReferenceAge,
+  avsScaleFactor,
+  coupleCapFactor,
+} from './avs';
 import { simulatePlan, type PlanResult } from './cashflow';
 import { compareCapitalVsAnnuity, type CapitalVsAnnuityResult } from './capitalVsAnnuity';
 import {
@@ -207,18 +213,40 @@ export function computeReport(
     buyIn = { amountPerYear, years, saving };
   }
 
+  // AVS pension by claim age (main person), with the married couple cap applied as in the plan.
+  const ramOf = (own: number, other?: number, override?: number) =>
+    override ?? (profile.status === 'married' && other !== undefined ? (own + other) / 2 : own);
+  const mainRam = ramOf(
+    profile.main.grossIncome,
+    profile.partner?.grossIncome,
+    profile.main.ramOverride,
+  );
+  let capFactor = 1;
+  if (profile.status === 'married' && profile.partner) {
+    const sA = avsScaleFactor(profile.main.avsMissingYears, p.avs);
+    const sB = avsScaleFactor(profile.partner.avsMissingYears, p.avs);
+    const partnerRam = ramOf(
+      profile.partner.grossIncome,
+      profile.main.grossIncome,
+      profile.partner.ramOverride,
+    );
+    capFactor = coupleCapFactor(
+      avsFullMonthly(mainRam, p.avs) * sA,
+      avsFullMonthly(partnerRam, p.avs) * sB,
+      sA,
+      sB,
+      p.avs,
+    );
+  }
   const avsCurve = avsClaimCurve(
     {
-      ram:
-        profile.main.ramOverride ??
-        (profile.status === 'married' && profile.partner
-          ? (profile.main.grossIncome + profile.partner.grossIncome) / 2
-          : profile.main.grossIncome),
+      ram: mainRam,
       missingYears: profile.main.avsMissingYears,
       birthYear: profile.main.birthYear,
       sex: profile.main.sex,
     },
     p.avs,
+    capFactor,
   );
 
   const advice = buildAdvice({

@@ -101,9 +101,9 @@ export function buildAdvice(i: AdviceInput): AdviceCard[] {
           ? { value: be, unit: 'age', label: 'Âge d’équilibre' }
           : { value: c.netCapital, unit: 'chf', label: 'Capital net' },
       bullets: [
-        `Capital restant à 85 ans : ${chf(c.paths.prudent.at85)} à ${chf(c.paths.dynamic.at85)} selon le rendement.`,
+        `À 85 ans, il reste ${chf(c.paths.prudent.at85)} à ${chf(c.paths.dynamic.at85)} de capital.`,
         favourAnnuity
-          ? `La rente gagne si vous vivez au-delà de ${be} ans. Le mixte limite le risque.`
+          ? `La rente gagne au-delà de ${be} ans ; le mixte limite le risque.`
           : 'Le capital offre souplesse et transmission. Le mixte reste souvent optimal.',
       ],
       action:
@@ -128,7 +128,7 @@ export function buildAdvice(i: AdviceInput): AdviceCard[] {
       label: `Pouvoir d’achat de ${chf(need)} dans 20 ans`,
     },
     bullets: [
-      `Avec ${(a.inflation * 100).toLocaleString('fr-CH')} % d’inflation, ${chf(need)} aujourd’hui valent ${chf(in20)} dans 20 ans.`,
+      `Avec ${(a.inflation * 100).toLocaleString('fr-CH')} % d’inflation, ${chf(need)} valent ${chf(in20)} dans 20 ans.`,
       'La rente LPP ne suit pas les prix. Gardez une part indexée.',
     ],
   });
@@ -144,7 +144,7 @@ export function buildAdvice(i: AdviceInput): AdviceCard[] {
     title: 'Planifiez plus loin que prévu',
     keyFigure: { value: a.horizonAge, unit: 'age', label: 'Horizon de planification' },
     bullets: [
-      `Espérance de vie moyenne : ${lifeAge.toLocaleString('fr-CH', { maximumFractionDigits: 0 })} ans. Une personne sur deux vit plus longtemps.`,
+      `Espérance de vie moyenne : ${lifeAge.toLocaleString('fr-CH', { maximumFractionDigits: 0 })} ans. La moitié vit plus longtemps.`,
       `Fonds d’urgence conseillé : ${chf(emergency)}, soit ${a.emergencyMonths} mois de dépenses.`,
     ],
   });
@@ -169,7 +169,7 @@ export function buildAdvice(i: AdviceInput): AdviceCard[] {
     title: 'Placez votre épargne par tranches',
     keyFigure: { value: b.long, unit: 'chf', label: 'À placer à long terme' },
     bullets: [
-      `Court terme ${chf(b.short)} en liquidités, moyen terme ${chf(b.mid)} en placements équilibrés.`,
+      `Liquidités ${chf(b.short)} à court terme, ${chf(b.mid)} équilibrés à moyen terme.`,
       'Long terme au-delà de 10 ans : actions, pour viser plus de rendement.',
     ],
   });

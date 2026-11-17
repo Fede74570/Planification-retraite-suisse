@@ -1,4 +1,4 @@
-import { m } from 'motion/react';
+import { m, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
 import { ChartFrame } from '@/components/charts/ChartFrame';
 import { Legend } from '@/components/charts/Legend';
@@ -241,9 +241,10 @@ function formatKey(c: AdviceCard): string {
 export function AdviceCardView({ card, index }: { card: AdviceCard; index: number }) {
   const applyAdvice = useApp((s) => s.applyAdvice);
   const [done, setDone] = useState(false);
+  const reduce = useReducedMotion();
   return (
     <m.article
-      initial={{ opacity: 0, y: 12 }}
+      initial={reduce ? false : { opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ ...spring, delay: index * 0.05 }}

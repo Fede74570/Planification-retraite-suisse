@@ -65,24 +65,13 @@ export function Home() {
         {/* Hero */}
         <section className="relative overflow-hidden" aria-labelledby="hero-title">
           <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-start gap-6 px-4 pt-8 pb-64 sm:px-6 sm:pt-16 sm:pb-80">
-            <m.h1
-              id="hero-title"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={spring}
-              className="m-0 max-w-[14ch] text-3xl text-ink"
-            >
+            <h1 id="hero-title" className="m-0 max-w-[14ch] text-3xl text-ink">
               Votre retraite suisse, claire en 2&nbsp;minutes.
-            </m.h1>
-            <m.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ...spring, delay: 0.06 }}
-              className="m-0 max-w-[46ch] text-lg text-ink-muted"
-            >
+            </h1>
+            <p className="m-0 max-w-[46ch] text-lg text-ink-muted">
               Combien vous toucherez, jusqu’à quel âge votre patrimoine tient, rente ou capital : un
               rapport simple, recalculé en direct.
-            </m.p>
+            </p>
             <m.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}

@@ -222,6 +222,8 @@ describe('Report and advice', () => {
     expect(report.buyIn!.saving).toBeGreaterThan(0);
     expect(report.withdrawals.totalTax).toBeLessThanOrEqual(report.withdrawals.sameYearTax);
     expect(report.avsCurve).toHaveLength(8);
+    // Couple cap: two maximum pensions → 3'840 / 2 each at the reference age (2027).
+    expect(report.avsCurve.find((x) => x.age === 65)!.monthly).toBeCloseTo(1920);
     expect(report.housing!.ratioToday).toBeGreaterThan(0);
   });
   it('produces contextual advice for edge profiles', () => {
@@ -255,6 +257,26 @@ describe('Report and advice', () => {
     );
     expect(single.capitalVsAnnuity).toBeNull();
     expect(single.housing).toBeNull();
+  });
+  it('keeps every advice bullet ≤ 12 words (§1), on contrasting profiles', () => {
+    const words = (t: string) => t.split(/\s+/).filter((w) => w && !/^[:;,–-]$/.test(w)).length;
+    const edge: Profile = {
+      ...EXAMPLE_PROFILE,
+      nationality: 'OTHER',
+      monthlyExpenses: 20_000,
+      main: {
+        ...EXAMPLE_PROFILE.main,
+        avsMissingYears: 3,
+        retirementAge: 60,
+        pillar3a: { balance: 20_000, accounts: 1 },
+      },
+      partner: { ...EXAMPLE_PROFILE.partner!, birthYear: 1972 },
+    };
+    for (const p of [EXAMPLE_PROFILE, edge]) {
+      for (const c of computeReport(p, a).advice) {
+        for (const b of c.bullets) expect(words(b), b).toBeLessThanOrEqual(12);
+      }
+    }
   });
   it('splits wealth into 3 buckets', () => {
     expect(splitBuckets(1_000_000, 30_000, 100_000)).toEqual({

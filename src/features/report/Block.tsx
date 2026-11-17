@@ -22,7 +22,7 @@ export function Block({ id, index, title, sentence, children, detail, className 
     <m.section
       id={id}
       aria-labelledby={`${id}-title`}
-      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 18 }}
+      initial={reduce ? false : { opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '0px 0px -40px 0px' }}
       transition={reduce ? { duration: 0.1 } : { ...spring, delay: Math.min(index, 4) * 0.06 }}
